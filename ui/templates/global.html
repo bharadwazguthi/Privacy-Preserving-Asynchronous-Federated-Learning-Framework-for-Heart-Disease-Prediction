@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Global Model | AFLCP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-indigo-700">AFLCP</h1>
+        <div class="space-x-6 text-gray-700 font-medium">
+            <a href="/" class="hover:text-indigo-600">Home</a>
+            <a href="/dashboard" class="hover:text-indigo-600">Dashboard</a>
+            <a href="/predict-page" class="hover:text-indigo-600">Predict</a>
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="max-w-6xl mx-auto px-6 py-10 space-y-10">
+
+    <!-- MODEL INFO -->
+    <div class="bg-white rounded-xl shadow p-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">
+            Global Federated Model
+        </h2>
+
+        <p class="text-gray-700 leading-relaxed max-w-4xl">
+            This page provides access to the final global model produced by the
+            Asynchronous Federated Learning with Communication Preservation (AFLCP)
+            framework. The model is trained collaboratively across multiple simulated
+            healthcare clients without sharing raw patient data.
+        </p>
+    </div>
+
+    <!-- MODEL DETAILS -->
+    <div class="bg-white rounded-xl shadow p-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">
+            Model Artifacts
+        </h3>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Artifact</th>
+                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Description</th>
+                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+
+                    <tr>
+                        <td class="px-4 py-3 font-medium">Global Model</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            Final trained TensorFlow model (HDF5 format)
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="/download-model"
+                               class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                Download
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="px-4 py-3 font-medium">Training Metrics</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            Accuracy, F1-score, and AUC across federated rounds
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="/download-metrics"
+                               class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                Download
+                            </a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="bg-white rounded-xl shadow p-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">
+            Usage Notes
+        </h3>
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+            <li>The global model can be deployed for inference without retraining.</li>
+            <li>All preprocessing artifacts (scaler, feature mapping) must be used together with the model.</li>
+            <li>Model training follows privacy-preserving federated learning principles.</li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-gray-100 py-6 mt-10">
+    <div class="max-w-7xl mx-auto px-6 text-center text-gray-600">
+        <p>© 2025 AFLCP Major Project</p>
+        <p class="text-sm">Asynchronous Federated Learning for Healthcare</p>
+    </div>
+</footer>
+
+</body>
+</html>

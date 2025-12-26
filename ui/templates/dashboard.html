@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AFLCP Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-indigo-700">AFLCP Dashboard</h1>
+        <div class="space-x-6 text-gray-700 font-medium">
+            <a href="/" class="hover:text-indigo-600">Home</a>
+            <a href="/predict-page" class="hover:text-indigo-600">Predict</a>
+            <a href="/global-model" class="hover:text-indigo-600">Model</a>
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="max-w-7xl mx-auto px-6 py-10 space-y-10">
+
+    <!-- TRAINING CONTROL -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">
+            Federated Training Control
+        </h2>
+        <p class="text-gray-600 mb-6">
+            Start the AFLCP federated learning simulation using the configured dataset and parameters.
+        </p>
+
+        <button onclick="startTraining()"
+                class="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
+            Start Training
+        </button>
+
+        <p id="trainStatus" class="mt-4 text-sm text-gray-600"></p>
+    </div>
+
+    <!-- METRICS -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">
+            Training Metrics
+        </h2>
+
+        <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Metric</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Value</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                <tr>
+                    <td class="px-4 py-2">Accuracy</td>
+                    <td class="px-4 py-2" id="acc">—</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2">F1 Score</td>
+                    <td class="px-4 py-2" id="f1">—</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2">AUC</td>
+                    <td class="px-4 py-2" id="auc">—</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+async function startTraining() {
+    document.getElementById("trainStatus").innerText =
+        "Training started. Please wait...";
+
+    const res = await fetch("/train", { method: "POST" });
+    const out = await res.json();
+
+    document.getElementById("trainStatus").innerText =
+        out.status || "Training started successfully.";
+}
+
+async function loadMetrics() {
+    try {
+        const res = await fetch("/metrics");
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) return;
+
+        const last = data[data.length - 1];
+
+        document.getElementById("acc").innerText =
+            last.accuracy ? last.accuracy.toFixed(4) : "—";
+
+        document.getElementById("f1").innerText =
+            last.f1 ? last.f1.toFixed(4) : "—";
+
+        document.getElementById("auc").innerText =
+            last.auc ? last.auc.toFixed(4) : "—";
+
+    } catch (e) {
+        console.error("Metrics not available yet.");
+    }
+}
+
+// Load metrics on page load
+loadMetrics();
+</script>
+
+</body>
+</html>

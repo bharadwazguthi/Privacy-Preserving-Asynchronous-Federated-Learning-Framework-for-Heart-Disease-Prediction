@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Heart Disease Prediction | AFLCP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-indigo-700">AFLCP</h1>
+        <div class="space-x-6 text-gray-700 font-medium">
+            <a href="/" class="hover:text-indigo-600">Home</a>
+            <a href="/dashboard" class="hover:text-indigo-600">Dashboard</a>
+            <a href="/global-model" class="hover:text-indigo-600">Model</a>
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="max-w-4xl mx-auto px-6 py-10">
+
+    <div class="bg-white rounded-xl shadow p-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">
+            Cardiovascular Health Assessment
+        </h2>
+
+        <!-- FORM -->
+        <form onsubmit="submitPrediction(); return false;"
+              class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- LEFT -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Age</label>
+                <input id="age" type="number" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Chest Pain Type (0–3)</label>
+                <input id="cp" type="number" min="0" max="3" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Serum Cholesterol</label>
+                <input id="chol" type="number" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Resting ECG (0–2)</label>
+                <input id="restecg" type="number" min="0" max="2" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Max Heart Rate</label>
+                <input id="thalach" type="number" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">ST Depression</label>
+                <input id="oldpeak" type="number" step="0.1" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+            </div>
+
+            <!-- RIGHT -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Sex (0 = Female, 1 = Male)</label>
+                <input id="sex" type="number" min="0" max="1" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Resting Blood Pressure</label>
+                <input id="trestbps" type="number" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Fasting Blood Sugar > 120 (0/1)</label>
+                <input id="fbs" type="number" min="0" max="1" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Exercise Induced Angina (0/1)</label>
+                <input id="exang" type="number" min="0" max="1" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Slope (0–2)</label>
+                <input id="slope" type="number" min="0" max="2" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Major Vessels (0–3)</label>
+                <input id="ca" type="number" min="0" max="3" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+
+                <label class="block mt-4 text-sm font-medium text-gray-700">Thalassemia (0–3)</label>
+                <input id="thal" type="number" min="0" max="3" required
+                       class="mt-1 w-full px-3 py-2 border rounded-md">
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="md:col-span-2 mt-6">
+                <button type="submit"
+                        class="w-full py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
+                    Predict Risk
+                </button>
+            </div>
+        </form>
+
+        <!-- RESULT -->
+        <div id="resultBox" class="mt-8 hidden">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Prediction Result</h3>
+            <p class="text-gray-700">
+                Probability of Heart Disease:
+                <span id="probValue" class="font-semibold text-indigo-600"></span>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+async function submitPrediction() {
+    const data = {
+        age: Number(document.getElementById("age").value),
+        sex: Number(document.getElementById("sex").value),
+        cp: Number(document.getElementById("cp").value),
+        trestbps: Number(document.getElementById("trestbps").value),
+        chol: Number(document.getElementById("chol").value),
+        fbs: Number(document.getElementById("fbs").value),
+        restecg: Number(document.getElementById("restecg").value),
+        thalach: Number(document.getElementById("thalach").value),
+        exang: Number(document.getElementById("exang").value),
+        oldpeak: Number(document.getElementById("oldpeak").value),
+        slope: Number(document.getElementById("slope").value),
+        ca: Number(document.getElementById("ca").value),
+        thal: Number(document.getElementById("thal").value)
+    };
+
+    const res = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const out = await res.json();
+
+    document.getElementById("probValue").innerText =
+        (out.probability * 100).toFixed(2) + "%";
+
+    document.getElementById("resultBox").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>

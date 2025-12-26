@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+tensorflow>=2.12
+numpy
+pandas
+scikit-learn
+python-multipart
