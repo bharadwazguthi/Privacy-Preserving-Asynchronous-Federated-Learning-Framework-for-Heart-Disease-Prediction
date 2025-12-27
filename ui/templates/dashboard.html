@@ -1,119 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AFLCP Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>AFLCP – Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 text-gray-800">
 
-<!-- NAVBAR -->
-<nav class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-indigo-700">AFLCP Dashboard</h1>
-        <div class="space-x-6 text-gray-700 font-medium">
-            <a href="/" class="hover:text-indigo-600">Home</a>
-            <a href="/predict-page" class="hover:text-indigo-600">Predict</a>
-            <a href="/global-model" class="hover:text-indigo-600">Model</a>
-        </div>
+<!-- ================= TOP NAV ================= -->
+<header class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <div class="flex items-center gap-2">
+      <span class="material-icons text-blue-600 text-3xl">psychology</span>
+      <span class="text-xl font-bold">AFLCP</span>
     </div>
-</nav>
 
-<!-- CONTENT -->
-<div class="max-w-7xl mx-auto px-6 py-10 space-y-10">
+    <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
+      <a href="/dashboard" class="text-blue-600">Dashboard</a>
+      <a href="#" class="hover:text-blue-600">Training</a>
+      <a href="#" class="hover:text-blue-600">Metrics</a>
+      <a href="#" class="hover:text-blue-600">Logs</a>
+    </nav>
 
-    <!-- TRAINING CONTROL -->
+    <div class="flex items-center gap-4">
+      <span class="material-icons text-gray-500">notifications</span>
+      <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9"/>
+    </div>
+
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="max-w-7xl mx-auto px-6 py-10">
+
+  <!-- ===== HERO CARD ===== -->
+  <div class="bg-white rounded-xl shadow p-8 mb-8">
+    <h1 class="text-2xl font-bold mb-2">
+      Novel Asynchronous Federated Learning Framework (AFLCP)
+    </h1>
+    <p class="text-gray-600 mb-6">
+      This application facilitates training, monitoring, and evaluation of a federated
+      learning model for cardiovascular disease prediction.
+    </p>
+
+    <div class="flex gap-4">
+      <button id="startTrainingBtn"
+        class="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+        <span class="material-icons">play_arrow</span>
+        Start Training
+      </button>
+
+      <button id="monitorBtn"
+        class="flex items-center gap-2 bg-blue-100 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-200 transition">
+        <span class="material-icons">bar_chart</span>
+        Monitor Progress
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== LOGS + METRICS ===== -->
+  <div class="grid md:grid-cols-2 gap-6 mb-8">
+
+    <!-- Logs -->
     <div class="bg-white rounded-xl shadow p-6">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">
-            Federated Training Control
-        </h2>
-        <p class="text-gray-600 mb-6">
-            Start the AFLCP federated learning simulation using the configured dataset and parameters.
-        </p>
+      <h2 class="font-semibold mb-4">Real-time Training Logs</h2>
 
-        <button onclick="startTraining()"
-                class="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
-            Start Training
-        </button>
-
-        <p id="trainStatus" class="mt-4 text-sm text-gray-600"></p>
+      <div id="trainingLogs"
+           class="bg-gray-100 rounded-lg p-4 h-52 overflow-y-auto text-sm font-mono text-gray-700">
+        &gt; Initializing federated learning environment...<br>
+        &gt; Distributing model to clients...<br>
+        &gt; Client 1: Training round 1 complete.<br>
+        &gt; Client 3: Training round 1 complete.<br>
+        &gt; Aggregating model updates...
+      </div>
     </div>
 
-    <!-- METRICS -->
+    <!-- Metrics -->
     <div class="bg-white rounded-xl shadow p-6">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">
-            Training Metrics
-        </h2>
+      <h2 class="font-semibold mb-4">Final Performance Metrics</h2>
 
-        <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Metric</th>
-                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Value</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                <tr>
-                    <td class="px-4 py-2">Accuracy</td>
-                    <td class="px-4 py-2" id="acc">—</td>
-                </tr>
-                <tr>
-                    <td class="px-4 py-2">F1 Score</td>
-                    <td class="px-4 py-2" id="f1">—</td>
-                </tr>
-                <tr>
-                    <td class="px-4 py-2">AUC</td>
-                    <td class="px-4 py-2" id="auc">—</td>
-                </tr>
-            </tbody>
-        </table>
+      <div class="flex gap-4 mb-4 text-sm font-medium">
+        <span class="text-blue-600 border-b-2 border-blue-600 pb-1 cursor-pointer">Table</span>
+        <span class="text-gray-500 cursor-pointer">Line Chart</span>
+      </div>
+
+      <table class="w-full text-sm">
+        <thead class="text-gray-500">
+          <tr>
+            <th class="text-left py-2">Metric</th>
+            <th class="text-right py-2">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="py-2">Accuracy</td>
+            <td class="py-2 text-right">0.85</td>
+          </tr>
+          <tr>
+            <td class="py-2">Precision</td>
+            <td class="py-2 text-right">0.82</td>
+          </tr>
+          <tr>
+            <td class="py-2">Recall</td>
+            <td class="py-2 text-right">0.88</td>
+          </tr>
+          <tr>
+            <td class="py-2">F1-Score</td>
+            <td class="py-2 text-right">0.83</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-</div>
+  </div>
 
-<!-- JAVASCRIPT -->
-<script>
-async function startTraining() {
-    document.getElementById("trainStatus").innerText =
-        "Training started. Please wait...";
+  <!-- ===== DATASET UPLOAD ===== -->
+  <div class="bg-white rounded-xl shadow p-8 text-center border-2 border-dashed border-gray-200">
+    <span class="material-icons text-blue-600 text-5xl mb-4">cloud_upload</span>
+    <p class="font-medium mb-1">Upload a file or drag and drop</p>
+    <p class="text-gray-500 text-sm mb-4">CSV up to 10MB</p>
 
-    const res = await fetch("/train", { method: "POST" });
-    const out = await res.json();
+    <input id="datasetInput" type="file" accept=".csv"
+           class="hidden"/>
 
-    document.getElementById("trainStatus").innerText =
-        out.status || "Training started successfully.";
-}
+    <button id="uploadBtn"
+      class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+      Upload Dataset
+    </button>
+  </div>
 
-async function loadMetrics() {
-    try {
-        const res = await fetch("/metrics");
-        const data = await res.json();
+</main>
 
-        if (!Array.isArray(data) || data.length === 0) return;
-
-        const last = data[data.length - 1];
-
-        document.getElementById("acc").innerText =
-            last.accuracy ? last.accuracy.toFixed(4) : "—";
-
-        document.getElementById("f1").innerText =
-            last.f1 ? last.f1.toFixed(4) : "—";
-
-        document.getElementById("auc").innerText =
-            last.auc ? last.auc.toFixed(4) : "—";
-
-    } catch (e) {
-        console.error("Metrics not available yet.");
-    }
-}
-
-// Load metrics on page load
-loadMetrics();
-</script>
+<!-- ================= FOOTER ================= -->
+<footer class="mt-16 py-6 text-center text-gray-500 text-sm">
+  © 2024 AFLCP Project. All Rights Reserved.
+</footer>
 
 </body>
 </html>

@@ -1,113 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Global Model | AFLCP</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>AFLCP – Global Model</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 text-gray-800">
 
-<!-- NAVBAR -->
-<nav class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-indigo-700">AFLCP</h1>
-        <div class="space-x-6 text-gray-700 font-medium">
-            <a href="/" class="hover:text-indigo-600">Home</a>
-            <a href="/dashboard" class="hover:text-indigo-600">Dashboard</a>
-            <a href="/predict-page" class="hover:text-indigo-600">Predict</a>
-        </div>
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <div class="flex items-center gap-2">
+      <span class="material-icons text-blue-600 text-3xl">hub</span>
+      <span class="text-xl font-bold">AFLCP</span>
     </div>
-</nav>
 
-<!-- CONTENT -->
-<div class="max-w-6xl mx-auto px-6 py-10 space-y-10">
+    <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
+      <a href="/" class="hover:text-blue-600">Home</a>
+      <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
+      <a href="/predict" class="hover:text-blue-600">Predict</a>
+      <a href="/global-model" class="text-blue-600">Model</a>
+    </nav>
 
-    <!-- MODEL INFO -->
-    <div class="bg-white rounded-xl shadow p-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-4">
-            Global Federated Model
-        </h2>
+    <div class="flex items-center gap-4">
+      <span class="material-icons text-gray-500">settings</span>
+      <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9"/>
+    </div>
 
-        <p class="text-gray-700 leading-relaxed max-w-4xl">
-            This page provides access to the final global model produced by the
-            Asynchronous Federated Learning with Communication Preservation (AFLCP)
-            framework. The model is trained collaboratively across multiple simulated
-            healthcare clients without sharing raw patient data.
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="max-w-6xl mx-auto px-6 py-10 space-y-8">
+
+  <!-- ===== MODEL OVERVIEW ===== -->
+  <section class="bg-white rounded-xl shadow p-8">
+    <h1 class="text-2xl font-bold mb-2">Global Federated Model Overview</h1>
+    <p class="text-gray-600 leading-relaxed">
+      This page provides insights into the final global model generated using the
+      Asynchronous Federated Learning with Communication Preservation (AFLCP)
+      framework. The model aggregates knowledge from multiple decentralized clients
+      while preserving data privacy.
+    </p>
+  </section>
+
+  <!-- ===== ARCHITECTURE ===== -->
+  <section class="bg-white rounded-xl shadow p-8">
+    <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+      <span class="material-icons text-blue-600">account_tree</span>
+      Model Architecture
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-6 text-center">
+      <div class="border rounded-lg p-4">
+        <h3 class="font-medium mb-1">Input Layer</h3>
+        <p class="text-sm text-gray-600">Patient Clinical Features</p>
+      </div>
+
+      <div class="border rounded-lg p-4">
+        <h3 class="font-medium mb-1">Hidden Layers</h3>
+        <p class="text-sm text-gray-600">
+          Dense Layers with ReLU Activation
         </p>
+      </div>
+
+      <div class="border rounded-lg p-4">
+        <h3 class="font-medium mb-1">Output Layer</h3>
+        <p class="text-sm text-gray-600">
+          Binary Classification (Risk / No Risk)
+        </p>
+      </div>
     </div>
+  </section>
 
-    <!-- MODEL DETAILS -->
-    <div class="bg-white rounded-xl shadow p-8">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">
-            Model Artifacts
-        </h3>
+  <!-- ===== ARTIFACTS ===== -->
+  <section class="bg-white rounded-xl shadow p-8">
+    <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+      <span class="material-icons text-blue-600">inventory_2</span>
+      Model Artifacts
+    </h2>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Artifact</th>
-                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Description</th>
-                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
+    <table class="w-full text-sm">
+      <thead class="text-gray-500 border-b">
+        <tr>
+          <th class="text-left py-2">Artifact</th>
+          <th class="text-left py-2">Description</th>
+          <th class="text-right py-2">Action</th>
+        </tr>
+      </thead>
 
-                    <tr>
-                        <td class="px-4 py-3 font-medium">Global Model</td>
-                        <td class="px-4 py-3 text-gray-600">
-                            Final trained TensorFlow model (HDF5 format)
-                        </td>
-                        <td class="px-4 py-3">
-                            <a href="/download-model"
-                               class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                                Download
-                            </a>
-                        </td>
-                    </tr>
+      <tbody class="divide-y">
+        <tr>
+          <td class="py-3 font-medium">Global Model</td>
+          <td class="py-3 text-gray-600">
+            Trained federated neural network model (HDF5)
+          </td>
+          <td class="py-3 text-right">
+            <button id="downloadModelBtn"
+              class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
+              Download
+            </button>
+          </td>
+        </tr>
 
-                    <tr>
-                        <td class="px-4 py-3 font-medium">Training Metrics</td>
-                        <td class="px-4 py-3 text-gray-600">
-                            Accuracy, F1-score, and AUC across federated rounds
-                        </td>
-                        <td class="px-4 py-3">
-                            <a href="/download-metrics"
-                               class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-                                Download
-                            </a>
-                        </td>
-                    </tr>
+        <tr>
+          <td class="py-3 font-medium">Training Metrics</td>
+          <td class="py-3 text-gray-600">
+            Accuracy, Precision, Recall, F1-Score across rounds
+          </td>
+          <td class="py-3 text-right">
+            <button id="downloadMetricsBtn"
+              class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
+              Download
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
-                </tbody>
-            </table>
-        </div>
-    </div>
+  <!-- ===== NOTES ===== -->
+  <section class="bg-white rounded-xl shadow p-8">
+    <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+      <span class="material-icons text-blue-600">info</span>
+      Notes
+    </h2>
 
-    <!-- NOTES -->
-    <div class="bg-white rounded-xl shadow p-8">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">
-            Usage Notes
-        </h3>
-        <ul class="list-disc list-inside text-gray-700 space-y-2">
-            <li>The global model can be deployed for inference without retraining.</li>
-            <li>All preprocessing artifacts (scaler, feature mapping) must be used together with the model.</li>
-            <li>Model training follows privacy-preserving federated learning principles.</li>
-        </ul>
-    </div>
+    <ul class="list-disc pl-6 text-gray-600 space-y-2">
+      <li>The global model is trained without sharing raw patient data.</li>
+      <li>All preprocessing artifacts must be used during inference.</li>
+      <li>The model supports asynchronous client updates.</li>
+      <li>Robust aggregation and communication optimization are applied.</li>
+    </ul>
+  </section>
 
-</div>
+</main>
 
-<!-- FOOTER -->
-<footer class="bg-gray-100 py-6 mt-10">
-    <div class="max-w-7xl mx-auto px-6 text-center text-gray-600">
-        <p>© 2025 AFLCP Major Project</p>
-        <p class="text-sm">Asynchronous Federated Learning for Healthcare</p>
-    </div>
+<!-- ================= FOOTER ================= -->
+<footer class="mt-16 py-6 text-center text-gray-500 text-sm">
+  © 2024 AFLCP Project. All Rights Reserved.
 </footer>
 
 </body>

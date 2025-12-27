@@ -1,152 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Heart Disease Prediction | AFLCP</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>AFLCP – Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 text-gray-800">
 
-<!-- NAVBAR -->
-<nav class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-indigo-700">AFLCP</h1>
-        <div class="space-x-6 text-gray-700 font-medium">
-            <a href="/" class="hover:text-indigo-600">Home</a>
-            <a href="/dashboard" class="hover:text-indigo-600">Dashboard</a>
-            <a href="/global-model" class="hover:text-indigo-600">Model</a>
-        </div>
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <div class="flex items-center gap-2">
+      <span class="material-icons text-blue-600 text-3xl">flag</span>
+      <span class="text-xl font-bold">AFLCP</span>
     </div>
-</nav>
 
-<!-- CONTENT -->
-<div class="max-w-4xl mx-auto px-6 py-10">
+    <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
+      <a href="/" class="hover:text-blue-600">Home</a>
+      <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
+      <a href="/predict" class="text-blue-600">Predict</a>
+    </nav>
 
-    <div class="bg-white rounded-xl shadow p-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">
-            Cardiovascular Health Assessment
-        </h2>
-
-        <!-- FORM -->
-        <form onsubmit="submitPrediction(); return false;"
-              class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <!-- LEFT -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Age</label>
-                <input id="age" type="number" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Chest Pain Type (0–3)</label>
-                <input id="cp" type="number" min="0" max="3" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Serum Cholesterol</label>
-                <input id="chol" type="number" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Resting ECG (0–2)</label>
-                <input id="restecg" type="number" min="0" max="2" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Max Heart Rate</label>
-                <input id="thalach" type="number" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">ST Depression</label>
-                <input id="oldpeak" type="number" step="0.1" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-            </div>
-
-            <!-- RIGHT -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Sex (0 = Female, 1 = Male)</label>
-                <input id="sex" type="number" min="0" max="1" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Resting Blood Pressure</label>
-                <input id="trestbps" type="number" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Fasting Blood Sugar > 120 (0/1)</label>
-                <input id="fbs" type="number" min="0" max="1" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Exercise Induced Angina (0/1)</label>
-                <input id="exang" type="number" min="0" max="1" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Slope (0–2)</label>
-                <input id="slope" type="number" min="0" max="2" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Major Vessels (0–3)</label>
-                <input id="ca" type="number" min="0" max="3" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-
-                <label class="block mt-4 text-sm font-medium text-gray-700">Thalassemia (0–3)</label>
-                <input id="thal" type="number" min="0" max="3" required
-                       class="mt-1 w-full px-3 py-2 border rounded-md">
-            </div>
-
-            <!-- SUBMIT -->
-            <div class="md:col-span-2 mt-6">
-                <button type="submit"
-                        class="w-full py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
-                    Predict Risk
-                </button>
-            </div>
-        </form>
-
-        <!-- RESULT -->
-        <div id="resultBox" class="mt-8 hidden">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Prediction Result</h3>
-            <p class="text-gray-700">
-                Probability of Heart Disease:
-                <span id="probValue" class="font-semibold text-indigo-600"></span>
-            </p>
-        </div>
-
+    <div class="flex items-center gap-4">
+      <span class="material-icons text-gray-500">search</span>
+      <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9"/>
     </div>
-</div>
 
-<!-- JAVASCRIPT -->
-<script>
-async function submitPrediction() {
-    const data = {
-        age: Number(document.getElementById("age").value),
-        sex: Number(document.getElementById("sex").value),
-        cp: Number(document.getElementById("cp").value),
-        trestbps: Number(document.getElementById("trestbps").value),
-        chol: Number(document.getElementById("chol").value),
-        fbs: Number(document.getElementById("fbs").value),
-        restecg: Number(document.getElementById("restecg").value),
-        thalach: Number(document.getElementById("thalach").value),
-        exang: Number(document.getElementById("exang").value),
-        oldpeak: Number(document.getElementById("oldpeak").value),
-        slope: Number(document.getElementById("slope").value),
-        ca: Number(document.getElementById("ca").value),
-        thal: Number(document.getElementById("thal").value)
-    };
+  </div>
+</header>
 
-    const res = await fetch("/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
+<!-- ================= MAIN ================= -->
+<main class="max-w-5xl mx-auto px-6 py-10">
 
-    const out = await res.json();
+  <div class="bg-white rounded-xl shadow p-8">
 
-    document.getElementById("probValue").innerText =
-        (out.probability * 100).toFixed(2) + "%";
+    <h1 class="text-2xl font-bold mb-2">Cardiovascular Health Assessment</h1>
+    <p class="text-gray-600 mb-8">
+      Enter your health parameters below to predict the probability of heart disease.
+    </p>
 
-    document.getElementById("resultBox").classList.remove("hidden");
-}
-</script>
+    <!-- ================= FORM ================= -->
+    <form id="predictionForm" class="grid md:grid-cols-2 gap-6">
+
+      <!-- Left -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Age</label>
+        <input type="number" placeholder="e.g., 52" class="w-full border rounded-lg px-4 py-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Sex</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Sex</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Chest Pain Type</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Type</option>
+          <option>Typical Angina</option>
+          <option>Atypical Angina</option>
+          <option>Non-anginal Pain</option>
+          <option>Asymptomatic</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Resting Blood Pressure (mm Hg)</label>
+        <input type="number" placeholder="e.g., 120" class="w-full border rounded-lg px-4 py-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Serum Cholesterol (mg/dl)</label>
+        <input type="number" placeholder="e.g., 211" class="w-full border rounded-lg px-4 py-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Fasting Blood Sugar &gt; 120 mg/dl</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Option</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Resting ECG Results</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Result</option>
+          <option>Normal</option>
+          <option>ST-T Abnormality</option>
+          <option>Left Ventricular Hypertrophy</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Maximum Heart Rate Achieved</label>
+        <input type="number" placeholder="e.g., 142" class="w-full border rounded-lg px-4 py-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Exercise Induced Angina</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Option</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">ST Depression Induced by Exercise</label>
+        <input type="number" step="0.1" placeholder="e.g., 1.5" class="w-full border rounded-lg px-4 py-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Slope of the Peak Exercise ST Segment</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Slope</option>
+          <option>Upsloping</option>
+          <option>Flat</option>
+          <option>Downsloping</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Major Vessels Colored by Fluoroscopy</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Number</option>
+          <option>0</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select>
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium mb-1">Thalassemia</label>
+        <select class="w-full border rounded-lg px-4 py-2">
+          <option>Select Type</option>
+          <option>Normal</option>
+          <option>Fixed Defect</option>
+          <option>Reversible Defect</option>
+        </select>
+      </div>
+
+    </form>
+
+    <!-- ================= ACTIONS ================= -->
+    <div class="flex justify-end gap-4 mt-8">
+      <button class="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+        Reset
+      </button>
+      <button id="predictBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        Predict
+      </button>
+    </div>
+
+    <!-- ================= RESULT ================= -->
+    <div class="mt-10 border-t pt-6">
+      <h2 class="font-semibold mb-2">Prediction Result</h2>
+      <p class="text-gray-600">Probability of Heart Disease:</p>
+
+      <div class="flex justify-between items-center mt-2">
+        <span id="probability" class="text-xl font-bold">75%</span>
+        <span class="bg-red-100 text-red-600 px-4 py-1 rounded-full text-sm">
+          Risk of Heart Disease
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="mt-16 py-6 text-center text-gray-500 text-sm">
+  © 2024 AFLCP Project. All Rights Reserved.
+</footer>
 
 </body>
 </html>

@@ -1,114 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>AFLCP – Federated Heart Disease Prediction</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>AFLCP – Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #f9fafb, #eef2ff);
-        }
-    </style>
+  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- NAVBAR -->
-    <nav class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-indigo-700">
-                AFLCP
-            </h1>
-            <div class="space-x-6 text-gray-700 font-medium">
-                <a href="/" class="hover:text-indigo-600">Home</a>
-                <a href="/dashboard" class="hover:text-indigo-600">Dashboard</a>
-                <a href="/predict-page" class="hover:text-indigo-600">Predict</a>
-                <a href="/global-model" class="hover:text-indigo-600">Model</a>
-            </div>
-        </div>
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+      <span class="material-icons text-blue-600 text-3xl">play_circle</span>
+      <span class="text-xl font-bold">AFLCP</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
+      <a href="/" class="hover:text-blue-600">Home</a>
+      <a href="#about" class="hover:text-blue-600">About</a>
+      <a href="#contact" class="hover:text-blue-600">Contact</a>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section class="flex-1 flex items-center">
-        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            
-            <!-- TEXT -->
-            <div>
-                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
-                    Privacy-Preserving Asynchronous Federated Learning
-                </h2>
-                <p class="text-lg text-gray-600 mb-6">
-                    A Novel AFLCP Framework for Accurate and Secure
-                    <span class="font-semibold text-indigo-600">
-                        Heart Disease Prediction
-                    </span>
-                    using decentralized healthcare data.
-                </p>
+    <!-- Profile -->
+    <div class="flex items-center gap-4">
+      <span class="material-icons text-gray-500 cursor-pointer">search</span>
+      <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9"/>
+    </div>
 
-                <div class="space-x-4">
-                    <a href="/predict-page"
-                       class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
-                        Start Prediction
-                    </a>
-                    <a href="/dashboard"
-                       class="inline-block px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
-                        View Dashboard
-                    </a>
-                </div>
-            </div>
+  </div>
+</header>
 
-            <!-- INFO CARD -->
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">
-                    Project Highlights
-                </h3>
-                <ul class="space-y-3 text-gray-600">
-                    <li>✅ Federated Learning without data sharing</li>
-                    <li>✅ Handles Non-IID hospital data</li>
-                    <li>✅ FedProx for training stability</li>
-                    <li>✅ Top-K gradient compression</li>
-                    <li>✅ Differential Privacy support</li>
-                    <li>✅ Robust aggregation techniques</li>
-                </ul>
-            </div>
+<!-- ================= HERO ================= -->
+<section class="max-w-5xl mx-auto px-6 py-20 text-center">
 
-        </div>
-    </section>
+  <h1 class="text-4xl md:text-5xl font-bold leading-tight">
+    A Novel Asynchronous Federated Learning Framework for Enhanced
+    Prediction of Cardiovascular Diseases
+  </h1>
 
-    <!-- ABOUT SECTION -->
-    <section class="bg-white py-16">
-        <div class="max-w-7xl mx-auto px-6">
-            <h3 class="text-3xl font-bold text-gray-900 mb-6">
-                Why AFLCP?
-            </h3>
-            <p class="text-gray-700 leading-relaxed max-w-4xl">
-                Traditional centralized machine learning systems require hospitals to share sensitive
-                patient data, leading to privacy, legal, and ethical concerns.  
-                <br><br>
-                The AFLCP framework solves this by enabling multiple healthcare institutions to collaboratively
-                train a global heart disease prediction model without exposing raw patient data.
-                <br><br>
-                Advanced techniques such as FedProx, Top-K communication compression, asynchronous updates,
-                and optional differential privacy ensure scalability, robustness, and high predictive accuracy.
-            </p>
-        </div>
-    </section>
+  <p class="mt-4 text-blue-600 font-semibold">(AFLCP)</p>
 
-    <!-- FOOTER -->
-    <footer class="bg-gray-100 py-6">
-        <div class="max-w-7xl mx-auto px-6 text-center text-gray-600">
-            <p>
-                © 2025 AFLCP Major Project  
-            </p>
-            <p class="text-sm">
-                Privacy Preserving Federated Learning for Healthcare
-            </p>
-        </div>
-    </footer>
+</section>
+
+<!-- ================= PROBLEM STATEMENT ================= -->
+<section class="max-w-4xl mx-auto px-6">
+
+  <div class="bg-white rounded-xl shadow p-6 flex gap-4">
+    <span class="material-icons text-blue-600 mt-1">warning</span>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Problem Statement</h2>
+      <p class="text-gray-600 leading-relaxed">
+        Cardiovascular diseases (CVDs) are a leading cause of death globally.
+        Early and accurate prediction of CVDs is crucial for timely intervention
+        and improved patient outcomes. Traditional machine learning models often
+        rely on centralized datasets, raising privacy concerns and limiting access
+        to diverse patient data. Federated learning (FL) offers a promising solution
+        by enabling collaborative model training across decentralized datasets without
+        sharing sensitive patient information. However, existing synchronous FL approaches
+        can be inefficient due to varying data availability and computational capabilities
+        across participating institutions.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= OBJECTIVES ================= -->
+<section class="max-w-4xl mx-auto px-6 mt-8">
+
+  <div class="bg-white rounded-xl shadow p-6 flex gap-4">
+    <span class="material-icons text-blue-600 mt-1">check_circle</span>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Objectives</h2>
+      <ul class="list-disc pl-5 text-gray-600 space-y-2">
+        <li>Design and implement an asynchronous FL algorithm that accommodates varying data availability and computational resources across institutions.</li>
+        <li>Integrate advanced AI techniques, such as deep learning models, to improve the accuracy and robustness of CVD prediction.</li>
+        <li>Evaluate the performance of AFLCP against existing synchronous FL methods such as FedAvg and FedProx using real-world datasets.</li>
+        <li>Develop a user-friendly web application for visualizing results and insights.</li>
+      </ul>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= ALGORITHMS & TOOLS ================= -->
+<section class="max-w-4xl mx-auto px-6 mt-8 grid md:grid-cols-2 gap-6">
+
+  <!-- Algorithms -->
+  <div class="bg-white rounded-xl shadow p-6">
+    <h3 class="font-semibold mb-3 flex items-center gap-2">
+      <span class="material-icons text-blue-600">settings</span>
+      Algorithms
+    </h3>
+
+    <p class="text-gray-600 mb-2">
+      <b>FedAvg:</b> A synchronous FL algorithm where the server aggregates model updates
+      from all clients at each round.
+    </p>
+
+    <p class="text-gray-600 mb-2">
+      <b>FedProx:</b> An extension of FedAvg that addresses statistical heterogeneity by
+      adding a proximal term.
+    </p>
+
+    <p class="text-blue-600 font-semibold">
+      <b>AFLCP:</b> Our proposed asynchronous algorithm that allows clients to update the
+      global model independently, improving efficiency.
+    </p>
+  </div>
+
+  <!-- Tools -->
+  <div class="bg-white rounded-xl shadow p-6">
+    <h3 class="font-semibold mb-3 flex items-center gap-2">
+      <span class="material-icons text-blue-600">build</span>
+      Tools & Technologies
+    </h3>
+
+    <div class="flex flex-wrap gap-3">
+      <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm">TensorFlow</span>
+      <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm">Python</span>
+      <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm">FastAPI</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= DEVELOPER ================= -->
+<section class="max-w-4xl mx-auto px-6 mt-10">
+
+  <div class="bg-white rounded-xl shadow p-6 text-center">
+    <h3 class="font-semibold text-lg mb-1">Developer</h3>
+    <p class="font-medium">Shivarathri Vamshi</p>
+    <p class="text-gray-600 text-sm">CMR College of Engineering & Technology, 4th Year CSE</p>
+    <a href="#" class="text-blue-600 mt-2 inline-block hover:underline">LinkedIn Profile →</a>
+  </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="mt-16 py-6 text-center text-gray-500 text-sm">
+  © 2024 AFLCP Project. All Rights Reserved.
+</footer>
 
 </body>
 </html>
