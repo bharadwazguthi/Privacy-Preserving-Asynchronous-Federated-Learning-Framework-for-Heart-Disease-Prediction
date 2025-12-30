@@ -93,7 +93,7 @@ def preprocess_input_dict(input_dict: dict):
 # =====================================================
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("main.html", {"request": request})
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -109,6 +109,10 @@ def predict_page(request: Request):
 @app.get("/global-model", response_class=HTMLResponse)
 def global_model_page(request: Request):
     return templates.TemplateResponse("global.html", {"request": request})
+
+@app.get("/about", response_class=HTMLResponse)
+def about_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 # =====================================================
