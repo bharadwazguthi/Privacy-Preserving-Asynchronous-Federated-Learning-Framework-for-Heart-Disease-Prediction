@@ -86,7 +86,7 @@
 <span class="material-symbols-outlined">model_training</span>
 <p class="text-sm font-medium leading-normal">Train Model</p>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-background-light dark:hover:bg-[#203038] hover:text-text-main-light dark:hover:text-text-main-dark transition-colors" href="/predict-page">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-background-light dark:hover:bg-[#203038] hover:text-text-main-light dark:hover:text-text-main-dark transition-colors" href="/predict">
 <span class="material-symbols-outlined">stethoscope</span>
 <p class="text-sm font-medium leading-normal">Predict</p>
 </a>
@@ -166,21 +166,21 @@
 <span class="material-symbols-outlined text-primary">model_training</span>
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium uppercase tracking-wide">Models Trained</p>
 </div>
-<p class="text-text-main-light dark:text-text-main-dark text-3xl font-bold tracking-tight">150+</p>
+<p id="models-trained" class="text-3xl font-bold">--</p>
 </div>
 <div class="flex flex-col gap-1 p-4 rounded-xl hover:bg-background-light dark:hover:bg-[#1d2d35] transition-colors cursor-default border-l-0 sm:border-l border-[#dbe2e6] dark:border-[#2a3c46]">
 <div class="flex items-center gap-2 mb-2">
 <span class="material-symbols-outlined text-primary">domain</span>
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium uppercase tracking-wide">Institutions Connected</p>
 </div>
-<p class="text-text-main-light dark:text-text-main-dark text-3xl font-bold tracking-tight">12</p>
+<p id="institutions" class="text-3xl font-bold">--</p>
 </div>
 <div class="flex flex-col gap-1 p-4 rounded-xl hover:bg-background-light dark:hover:bg-[#1d2d35] transition-colors cursor-default border-l-0 sm:border-l border-[#dbe2e6] dark:border-[#2a3c46]">
 <div class="flex items-center gap-2 mb-2">
 <span class="material-symbols-outlined text-primary">verified</span>
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium uppercase tracking-wide">Prediction Accuracy</p>
 </div>
-<p class="text-text-main-light dark:text-text-main-dark text-3xl font-bold tracking-tight">98.5%</p>
+<p id="accuracy" class="text-3xl font-bold">--%</p>
 </div>
 </div>
 </div>
@@ -245,10 +245,12 @@
 <p class="text-text-secondary-light dark:text-text-secondary-dark">Start a new training session with your local dataset or run a prediction using the latest global model.</p>
 </div>
 <div class="flex gap-4">
-<button class="bg-primary hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-xl">play_circle</span>
-                                Start Training
-                            </button>
+<a href="/dashboard"
+   class="inline-flex items-center gap-2 bg-primary hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors">
+  <span class="material-symbols-outlined text-xl">play_circle</span>
+  Start Training
+</a>
+
 </div>
 </div>
 <!-- Decorative Background element -->
@@ -264,9 +266,31 @@
 <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary text-sm font-medium transition-colors" href="#">Contact Us</a>
 <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary text-sm font-medium transition-colors" href="#">GitHub Repo</a>
 </div>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">© 2024 AFLCP Project. All rights reserved.</p>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">© 2025 AFLCP Project. All rights reserved.</p>
 </div>
 </footer>
 </div>
 </main>
+<script>
+async function loadStats() {
+  try {
+    const res = await fetch("/api/stats");
+    const data = await res.json();
+
+    document.getElementById("models-trained").innerText =
+      data.models_trained ? data.models_trained + "+" : "0";
+
+    document.getElementById("institutions").innerText =
+      data.institutions ?? "--";
+
+    document.getElementById("accuracy").innerText =
+      data.accuracy ? data.accuracy + "%" : "--%";
+
+  } catch (err) {
+    console.error("Failed to load stats", err);
+  }
+}
+
+loadStats();
+</script>
 </body></html>

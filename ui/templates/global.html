@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>AFLCP – Global Model</title>
@@ -14,140 +15,150 @@
 
 <body class="bg-gray-50 text-gray-800">
 
-<!-- ================= NAVBAR ================= -->
-<header class="bg-white shadow-sm">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <!-- ================= NAVBAR ================= -->
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <div class="flex items-center gap-2">
-      <span class="material-icons text-blue-600 text-3xl">hub</span>
-      <span class="text-xl font-bold">AFLCP</span>
-    </div>
-
-    <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
-      <a href="/" class="hover:text-blue-600">Home</a>
-      <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
-      <a href="/predict" class="hover:text-blue-600">Predict</a>
-      <a href="/global-model" class="text-blue-600">Model</a>
-    </nav>
-
-    <div class="flex items-center gap-4">
-      <span class="material-icons text-gray-500">settings</span>
-      <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9"/>
-    </div>
-
-  </div>
-</header>
-
-<!-- ================= MAIN ================= -->
-<main class="max-w-6xl mx-auto px-6 py-10 space-y-8">
-
-  <!-- ===== MODEL OVERVIEW ===== -->
-  <section class="bg-white rounded-xl shadow p-8">
-    <h1 class="text-2xl font-bold mb-2">Global Federated Model Overview</h1>
-    <p class="text-gray-600 leading-relaxed">
-      This page provides insights into the final global model generated using the
-      Asynchronous Federated Learning with Communication Preservation (AFLCP)
-      framework. The model aggregates knowledge from multiple decentralized clients
-      while preserving data privacy.
-    </p>
-  </section>
-
-  <!-- ===== ARCHITECTURE ===== -->
-  <section class="bg-white rounded-xl shadow p-8">
-    <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-      <span class="material-icons text-blue-600">account_tree</span>
-      Model Architecture
-    </h2>
-
-    <div class="grid md:grid-cols-3 gap-6 text-center">
-      <div class="border rounded-lg p-4">
-        <h3 class="font-medium mb-1">Input Layer</h3>
-        <p class="text-sm text-gray-600">Patient Clinical Features</p>
+      <div class="flex items-center gap-2">
+        <span class="material-icons text-blue-600 text-3xl">hub</span>
+        <span class="text-xl font-bold">AFLCP</span>
       </div>
 
-      <div class="border rounded-lg p-4">
-        <h3 class="font-medium mb-1">Hidden Layers</h3>
-        <p class="text-sm text-gray-600">
-          Dense Layers with ReLU Activation
-        </p>
+      <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
+        <a href="/" class="hover:text-blue-600">Home</a>
+        <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
+        <a href="/predict" class="hover:text-blue-600">Predict</a>
+        <a href="/global-model" class="text-blue-600">Model</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <span class="material-icons text-gray-500">settings</span>
+        <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9" />
       </div>
 
-      <div class="border rounded-lg p-4">
-        <h3 class="font-medium mb-1">Output Layer</h3>
-        <p class="text-sm text-gray-600">
-          Binary Classification (Risk / No Risk)
-        </p>
-      </div>
     </div>
-  </section>
+  </header>
 
-  <!-- ===== ARTIFACTS ===== -->
-  <section class="bg-white rounded-xl shadow p-8">
-    <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-      <span class="material-icons text-blue-600">inventory_2</span>
-      Model Artifacts
-    </h2>
+  <!-- ================= MAIN ================= -->
+  <main class="max-w-6xl mx-auto px-6 py-10 space-y-8">
 
-    <table class="w-full text-sm">
-      <thead class="text-gray-500 border-b">
-        <tr>
-          <th class="text-left py-2">Artifact</th>
-          <th class="text-left py-2">Description</th>
-          <th class="text-right py-2">Action</th>
-        </tr>
-      </thead>
+    <!-- ===== MODEL OVERVIEW ===== -->
+    <section class="bg-white rounded-xl shadow p-8">
+      <h1 class="text-2xl font-bold mb-2">Global Federated Model Overview</h1>
+      <p class="text-gray-600 leading-relaxed">
+        This page provides insights into the final global model generated using the
+        Asynchronous Federated Learning with Communication Preservation (AFLCP)
+        framework. The model aggregates knowledge from multiple decentralized clients
+        while preserving data privacy.
+      </p>
+    </section>
 
-      <tbody class="divide-y">
-        <tr>
-          <td class="py-3 font-medium">Global Model</td>
-          <td class="py-3 text-gray-600">
-            Trained federated neural network model (HDF5)
-          </td>
-          <td class="py-3 text-right">
-            <button id="downloadModelBtn"
-              class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
-              Download
-            </button>
-          </td>
-        </tr>
+    <!-- ===== ARCHITECTURE ===== -->
+    <section class="bg-white rounded-xl shadow p-8">
+      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+        <span class="material-icons text-blue-600">account_tree</span>
+        Model Architecture
+      </h2>
 
-        <tr>
-          <td class="py-3 font-medium">Training Metrics</td>
-          <td class="py-3 text-gray-600">
-            Accuracy, Precision, Recall, F1-Score across rounds
-          </td>
-          <td class="py-3 text-right">
-            <button id="downloadMetricsBtn"
-              class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
-              Download
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+      <div class="grid md:grid-cols-3 gap-6 text-center">
+        <div class="border rounded-lg p-4">
+          <h3 class="font-medium mb-1">Input Layer</h3>
+          <p class="text-sm text-gray-600">Patient Clinical Features</p>
+        </div>
 
-  <!-- ===== NOTES ===== -->
-  <section class="bg-white rounded-xl shadow p-8">
-    <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-      <span class="material-icons text-blue-600">info</span>
-      Notes
-    </h2>
+        <div class="border rounded-lg p-4">
+          <h3 class="font-medium mb-1">Hidden Layers</h3>
+          <p class="text-sm text-gray-600">
+            Dense Layers with ReLU Activation
+          </p>
+        </div>
 
-    <ul class="list-disc pl-6 text-gray-600 space-y-2">
-      <li>The global model is trained without sharing raw patient data.</li>
-      <li>All preprocessing artifacts must be used during inference.</li>
-      <li>The model supports asynchronous client updates.</li>
-      <li>Robust aggregation and communication optimization are applied.</li>
-    </ul>
-  </section>
+        <div class="border rounded-lg p-4">
+          <h3 class="font-medium mb-1">Output Layer</h3>
+          <p class="text-sm text-gray-600">
+            Binary Classification (Risk / No Risk)
+          </p>
+        </div>
+      </div>
+    </section>
 
-</main>
+    <!-- ===== ARTIFACTS ===== -->
+    <section class="bg-white rounded-xl shadow p-8">
+      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+        <span class="material-icons text-blue-600">inventory_2</span>
+        Model Artifacts
+      </h2>
 
-<!-- ================= FOOTER ================= -->
-<footer class="mt-16 py-6 text-center text-gray-500 text-sm">
-  © 2024 AFLCP Project. All Rights Reserved.
-</footer>
+      <table class="w-full text-sm">
+        <thead class="text-gray-500 border-b">
+          <tr>
+            <th class="text-left py-2">Artifact</th>
+            <th class="text-left py-2">Description</th>
+            <th class="text-right py-2">Action</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y">
+          <tr>
+            <td class="py-3 font-medium">Global Model</td>
+            <td class="py-3 text-gray-600">
+              Trained federated neural network model (HDF5)
+            </td>
+            <td class="py-3 text-right">
+              <button id="downloadModelBtn" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
+                Download
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="py-3 font-medium">Training Metrics</td>
+            <td class="py-3 text-gray-600">
+              Accuracy, Precision, Recall, F1-Score across rounds
+            </td>
+            <td class="py-3 text-right">
+              <button id="downloadMetricsBtn" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
+                Download
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===== NOTES ===== -->
+    <section class="bg-white rounded-xl shadow p-8">
+      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+        <span class="material-icons text-blue-600">info</span>
+        Notes
+      </h2>
+
+      <ul class="list-disc pl-6 text-gray-600 space-y-2">
+        <li>The global model is trained without sharing raw patient data.</li>
+        <li>All preprocessing artifacts must be used during inference.</li>
+        <li>The model supports asynchronous client updates.</li>
+        <li>Robust aggregation and communication optimization are applied.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- ================= JAVASCRIPT ================= -->
+  <script>
+    document.getElementById("downloadModelBtn").onclick = () => {
+      window.location.href = "/download/model";
+    };
+
+    document.getElementById("downloadMetricsBtn").onclick = () => {
+      window.location.href = "/download/metrics";
+    };
+  </script>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="mt-16 py-6 text-center text-gray-500 text-sm">
+    © 2024 AFLCP Project. All Rights Reserved.
+  </footer>
 
 </body>
+
 </html>

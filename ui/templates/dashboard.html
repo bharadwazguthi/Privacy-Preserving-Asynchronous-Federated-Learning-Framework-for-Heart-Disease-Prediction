@@ -64,6 +64,8 @@
         Monitor Progress
       </button>
     </div>
+
+    <p id="trainStatus" class="text-sm mt-4"></p>
   </div>
 
   <!-- ===== LOGS + METRICS ===== -->
@@ -73,13 +75,9 @@
     <div class="bg-white rounded-xl shadow p-6">
       <h2 class="font-semibold mb-4">Real-time Training Logs</h2>
 
-      <div id="trainingLogs"
-           class="bg-gray-100 rounded-lg p-4 h-52 overflow-y-auto text-sm font-mono text-gray-700">
-        &gt; Initializing federated learning environment...<br>
-        &gt; Distributing model to clients...<br>
-        &gt; Client 1: Training round 1 complete.<br>
-        &gt; Client 3: Training round 1 complete.<br>
-        &gt; Aggregating model updates...
+      <div id="logsBox"
+           class="bg-gray-100 rounded-lg p-4 h-52 overflow-y-auto text-sm font-mono text-gray-700 whitespace-pre-wrap">
+        Waiting for training to start...
       </div>
     </div>
 
@@ -87,34 +85,19 @@
     <div class="bg-white rounded-xl shadow p-6">
       <h2 class="font-semibold mb-4">Final Performance Metrics</h2>
 
-      <div class="flex gap-4 mb-4 text-sm font-medium">
-        <span class="text-blue-600 border-b-2 border-blue-600 pb-1 cursor-pointer">Table</span>
-        <span class="text-gray-500 cursor-pointer">Line Chart</span>
-      </div>
-
       <table class="w-full text-sm">
         <thead class="text-gray-500">
           <tr>
-            <th class="text-left py-2">Metric</th>
-            <th class="text-right py-2">Value</th>
+            <th class="text-left py-2">Round</th>
+            <th class="text-right py-2">Accuracy</th>
+            <th class="text-right py-2">F1</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="metricsTable">
           <tr>
-            <td class="py-2">Accuracy</td>
-            <td class="py-2 text-right">0.85</td>
-          </tr>
-          <tr>
-            <td class="py-2">Precision</td>
-            <td class="py-2 text-right">0.82</td>
-          </tr>
-          <tr>
-            <td class="py-2">Recall</td>
-            <td class="py-2 text-right">0.88</td>
-          </tr>
-          <tr>
-            <td class="py-2">F1-Score</td>
-            <td class="py-2 text-right">0.83</td>
+            <td colspan="3" class="text-center text-gray-400 py-4">
+              No metrics yet
+            </td>
           </tr>
         </tbody>
       </table>
@@ -128,16 +111,89 @@
     <p class="font-medium mb-1">Upload a file or drag and drop</p>
     <p class="text-gray-500 text-sm mb-4">CSV up to 10MB</p>
 
-    <input id="datasetInput" type="file" accept=".csv"
-           class="hidden"/>
+    <input id="datasetInput" type="file" accept=".csv" class="hidden"/>
 
     <button id="uploadBtn"
       class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
       Upload Dataset
     </button>
+
+    <p id="uploadStatus" class="text-sm mt-3"></p>
   </div>
 
 </main>
+
+<!-- ================= JS ================= -->
+<script>
+const datasetInput = document.getElementById("datasetInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const uploadStatus = document.getElementById("uploadStatus");
+const startTrainingBtn = document.getElementById("startTrainingBtn");
+const trainStatus = document.getElementById("trainStatus");
+const logsBox = document.getElementById("logsBox");
+const metricsTable = document.getElementById("metricsTable");
+
+let csvUploaded = false;
+
+/* ---------------- CSV Upload ---------------- */
+uploadBtn.onclick = () => datasetInput.click();
+
+datasetInput.onchange = async () => {
+  if (!datasetInput.files.length) return;
+
+  const formData = new FormData();
+  formData.append("file", datasetInput.files[0]);
+
+  uploadStatus.innerText = "Uploading...";
+
+  const res = await fetch("/api/upload-csv", { method: "POST", body: formData });
+  const data = await res.json();
+
+  if (!res.ok) {
+    uploadStatus.innerText = data.error || "Upload failed";
+    return;
+  }
+
+  csvUploaded = true;
+  uploadStatus.innerText = "✅ CSV uploaded successfully";
+};
+
+/* ---------------- Start Training ---------------- */
+startTrainingBtn.onclick = async () => {
+  if (!csvUploaded) {
+    alert("Please upload a CSV file first");
+    return;
+  }
+
+  trainStatus.innerText = "🚀 Training started...";
+  await fetch("/api/start-training", { method: "POST" });
+};
+
+/* ---------------- Logs Polling ---------------- */
+setInterval(async () => {
+  const res = await fetch("/api/logs");
+  const data = await res.json();
+  logsBox.innerText = data.logs || "Waiting for logs...";
+}, 2000);
+
+/* ---------------- Metrics Polling ---------------- */
+setInterval(async () => {
+  const res = await fetch("/api/metrics");
+  const rows = await res.json();
+
+  if (!rows.length) return;
+
+  metricsTable.innerHTML = "";
+  rows.forEach(r => {
+    metricsTable.innerHTML += `
+      <tr>
+        <td class="py-1">${r.round}</td>
+        <td class="py-1 text-right">${r.accuracy.toFixed(4)}</td>
+        <td class="py-1 text-right">${r.f1.toFixed(4)}</td>
+      </tr>`;
+  });
+}, 4000);
+</script>
 
 <!-- ================= FOOTER ================= -->
 <footer class="mt-16 py-6 text-center text-gray-500 text-sm">
