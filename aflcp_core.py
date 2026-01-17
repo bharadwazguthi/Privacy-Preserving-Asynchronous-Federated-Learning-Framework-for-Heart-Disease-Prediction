@@ -111,10 +111,11 @@ class DataPreprocessor:
         # Convert labels to integers
         try:
             y_num = pd.to_numeric(y_raw, errors='coerce')
-            if y_num.isna().any():
+            # Use pd.isna() which works with both pandas Series and numpy arrays
+            if pd.isna(y_num).any():
                 y = pd.factorize(y_raw)[0]
             else:
-                y = y_num.astype(int).values
+                y = np.asarray(y_num).astype(int)
         except (ValueError, TypeError):
             y = pd.factorize(y_raw)[0]
         
