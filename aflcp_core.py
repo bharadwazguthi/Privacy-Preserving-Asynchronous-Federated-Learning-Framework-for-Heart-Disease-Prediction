@@ -3,6 +3,7 @@ AFLCP Backend - Consolidated single-file backend for Federated Learning
 Combines training and prediction into reusable functions.
 """
 import os
+import sys
 import time
 import math
 import random
@@ -10,12 +11,21 @@ import pickle
 from copy import deepcopy
 from pathlib import Path
 
+# Suppress TensorFlow warnings before import
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
+
+# Configure TensorFlow for threading (fixes hang in background threads)
+tf.config.threading.set_inter_op_parallelism_threads(1)
+tf.config.threading.set_intra_op_parallelism_threads(1)
+
 
 
 # ============================================================================
@@ -52,7 +62,22 @@ class AFLCPConfig:
         
         # Output
         self.save_dir = kwargs.get('save_dir', 'aflcp_weights')
+        self.log_file = kwargs.get('log_file', None)  # Path to log file for direct writes
         self.verbose = kwargs.get('verbose', True)
+
+
+def log_to_file(log_file, message):
+    """Write message directly to log file (bypasses stdout redirect issues)"""
+    if log_file:
+        try:
+            with open(log_file, 'a') as f:
+                f.write(message + '\n')
+                f.flush()
+        except:
+            pass
+    # Also print to stdout
+    print(message, flush=True)
+    sys.stdout.flush()
 
 
 # ============================================================================
@@ -186,11 +211,15 @@ class DataPreprocessor:
 # MODEL CREATION
 # ============================================================================
 def create_model(input_dim, n_classes):
-    """Create a simple feedforward neural network"""
+    """Create a feedforward neural network for heart disease prediction"""
     model = tf.keras.Sequential([
         tf.keras.layers.InputLayer(shape=(input_dim,)),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dropout(0.3),
         tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(32, activation='relu')
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(32, activation='relu'),
+        tf.keras.layers.Dropout(0.1),
     ])
     
     if n_classes == 2:
@@ -583,25 +612,31 @@ class AFLCPTrainer:
         """Main training loop"""
         os.makedirs(self.config.save_dir, exist_ok=True)
         server_time = 0.0
+        log_file = self.config.log_file
         
-        print(f"\n{'='*60}")
-        print("Starting AFLCP Training")
-        print(f"{'='*60}\n")
+        log_to_file(log_file, f"\n{'='*60}")
+        log_to_file(log_file, "Starting AFLCP Training")
+        log_to_file(log_file, f"{'='*60}\n")
         
         for round_num in range(1, self.config.rounds + 1):
             round_start = time.time()
+            
+            log_to_file(log_file, f"\n[Round {round_num}/{self.config.rounds}] Training...")
             
             # Select clients
             chosen = random.sample(
                 range(self.config.num_clients),
                 k=min(self.config.clients_per_round, self.config.num_clients)
             )
+            log_to_file(log_file, f"  Selected clients: {chosen}")
             
             # Train clients
             arrivals = []
             for cid in chosen:
+                log_to_file(log_file, f"  Training client {cid}...")
                 delay = random.uniform(0.0, 0.8)
                 result = self.train_client(cid, round_num)
+                log_to_file(log_file, f"  Client {cid} done")
                 
                 if result is not None:
                     result["timestamp"] = server_time + delay
@@ -615,6 +650,7 @@ class AFLCPTrainer:
                 server_time = max(arr["timestamp"] for arr in arrivals)
             
             # Aggregate
+            log_to_file(log_file, f"  Aggregating...")
             self.aggregate(arrivals, server_time)
             
             # Evaluate
@@ -626,10 +662,11 @@ class AFLCPTrainer:
             
             round_time = time.time() - round_start
             
-            print(f"Round {round_num:02d} | "
+            auc_str = f"{auc:.4f}" if auc else "N/A"
+            log_to_file(log_file, f"Round {round_num:02d} | "
                   f"Clients {[a['client_id'] for a in arrivals]} | "
                   f"Acc {acc:.4f} | F1 {f1:.4f} | "
-                  f"AUC {auc:.4f if auc else 'N/A'} | "
+                  f"AUC {auc_str} | "
                   f"Time {round_time:.2f}s")
             
             # Save round weights
@@ -637,20 +674,20 @@ class AFLCPTrainer:
                 os.path.join(self.config.save_dir, f"aflcp_round_{round_num}.npz"),
                 *self.global_weights
             )
+            
+            # Save metrics incrementally after each round (for live UI updates)
+            pd.DataFrame(self.metrics_history).to_csv(
+                os.path.join(self.config.save_dir, "metrics.csv"),
+                index=False
+            )
         
         # Save final model
         FLUtils.set_weights(self.global_model, self.global_weights)
         self.global_model.save(os.path.join(self.config.save_dir, "global_model.h5"))
         
-        # Save metrics
-        pd.DataFrame(self.metrics_history).to_csv(
-            os.path.join(self.config.save_dir, "metrics.csv"),
-            index=False
-        )
-        
-        print(f"\n{'='*60}")
-        print(f"Training complete! Artifacts saved to {self.config.save_dir}")
-        print(f"{'='*60}\n")
+        log_to_file(log_file, f"\n{'='*60}")
+        log_to_file(log_file, f"✅ Training complete! Artifacts saved to {self.config.save_dir}")
+        log_to_file(log_file, f"{'='*60}\n")
         
         return self.metrics_history
 

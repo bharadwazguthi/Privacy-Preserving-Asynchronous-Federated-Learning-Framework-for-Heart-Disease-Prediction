@@ -1,0 +1,27 @@
+# Mac OS
+.DS_Store
+*.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# Database
+*.db
+
+# Data & Models
+uploads/
+aflcp_weights/
+saved_models/
+*.h5
+*.pkl
+*.npy
+*.npz
+*.png

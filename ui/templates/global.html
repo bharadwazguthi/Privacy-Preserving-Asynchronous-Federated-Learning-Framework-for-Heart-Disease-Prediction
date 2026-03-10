@@ -1,150 +1,335 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>AFLCP – Global Model</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>AFLCP – Model Metrics</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <!-- Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1193d4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101c22",
+            "surface-light": "#ffffff",
+            "surface-dark": "#18262e",
+            "text-main-light": "#111618",
+            "text-main-dark": "#e0e6e9",
+            "text-secondary-light": "#617c89",
+            "text-secondary-dark": "#94aab5",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
 
-  <!-- Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body
+  class="bg-background-light dark:bg-background-dark min-h-screen text-text-main-light dark:text-text-main-dark flex overflow-hidden font-display">
 
-  <!-- ================= NAVBAR ================= -->
-  <header class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <!-- Sidebar Navigation -->
+  <aside
+    class="w-64 flex flex-col border-r border-[#dbe2e6] dark:border-[#2a3c46] bg-surface-light dark:bg-surface-dark h-screen sticky top-0 shrink-0 z-50">
+    <!-- Logo Area -->
+    <div class="p-6 border-b border-[#dbe2e6] dark:border-[#2a3c46]">
+      <div class="flex gap-3 items-center">
+        <div class="bg-primary/10 rounded-full size-10 shrink-0 flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-2xl">cardiology</span>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-none">AFLCP</h1>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal mt-1">CVD Prediction AI
+          </p>
+        </div>
+      </div>
+    </div>
 
-      <div class="flex items-center gap-2">
-        <span class="material-icons text-blue-600 text-3xl">hub</span>
-        <span class="text-xl font-bold">AFLCP</span>
+    <!-- Navigation Links -->
+    <div class="flex flex-col gap-2 p-4 overflow-y-auto flex-1">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-background-light dark:hover:bg-[#203038] hover:text-text-main-light dark:hover:text-text-main-dark transition-colors"
+        href="/">
+        <span class="material-symbols-outlined">dashboard</span>
+        <p class="text-sm font-medium leading-normal">Dashboard</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-background-light dark:hover:bg-[#203038] hover:text-text-main-light dark:hover:text-text-main-dark transition-colors"
+        href="/dashboard">
+        <span class="material-symbols-outlined">model_training</span>
+        <p class="text-sm font-medium leading-normal">Train Model</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-background-light dark:hover:bg-[#203038] transition-colors"
+        href="/saved-models">
+        <span class="material-symbols-outlined">save</span>
+        <p class="text-sm font-medium leading-normal">Saved Models</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-background-light dark:hover:bg-[#203038] transition-colors"
+        href="/predict">
+        <span class="material-symbols-outlined">stethoscope</span>
+        <p class="text-sm font-medium leading-normal">Predict</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary group transition-colors"
+        href="/global-model">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
+        <p class="text-sm font-medium leading-normal">Model Metrics</p>
+      </a>
+      <div class="my-2 border-t border-[#dbe2e6] dark:border-[#2a3c46]"></div>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-background-light dark:hover:bg-[#203038] transition-colors"
+        href="/about">
+        <span class="material-symbols-outlined">info</span>
+        <p class="text-sm font-medium leading-normal">About Project</p>
+      </a>
+    </div>
+    <div class="p-4 border-t border-[#dbe2e6] dark:border-[#2a3c46]">
+      <a href="/api/logout"
+        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-red-500">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span class="text-sm font-medium">Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 h-screen overflow-y-auto bg-background-light dark:bg-background-dark">
+    <div class="flex flex-col min-h-full p-8">
+
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark mb-2">Global Federated Model</h1>
+        <p class="text-text-secondary-light dark:text-text-secondary-dark">View metrics, download artifacts, and analyze
+          the performance of your trained federated model.</p>
       </div>
 
-      <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
-        <a href="/" class="hover:text-blue-600">Home</a>
-        <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
-        <a href="/predict" class="hover:text-blue-600">Predict</a>
-        <a href="/global-model" class="text-blue-600">Model</a>
-      </nav>
+      <!-- Model Overview Card -->
+      <section
+        class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="material-symbols-outlined text-primary text-2xl">hub</span>
+          <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Model Overview</h2>
+        </div>
+        <p class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
+          This federated model was trained using the AFLCP framework, which aggregates knowledge from multiple
+          decentralized clients while preserving data privacy. The model uses asynchronous updates with
+          communication-efficient gradient compression.
+        </p>
+      </section>
 
-      <div class="flex items-center gap-4">
-        <span class="material-icons text-gray-500">settings</span>
-        <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9" />
+      <!-- Stats Cards -->
+      <div class="grid md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
+          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
+            <span class="material-symbols-outlined text-lg">speed</span>
+            Best Accuracy
+          </div>
+          <p id="bestAccuracy" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--%</p>
+        </div>
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
+          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
+            <span class="material-symbols-outlined text-lg">check_circle</span>
+            Best F1 Score
+          </div>
+          <p id="bestF1" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--%</p>
+        </div>
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
+          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
+            <span class="material-symbols-outlined text-lg">replay</span>
+            Total Rounds
+          </div>
+          <p id="totalRounds" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--</p>
+        </div>
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
+          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
+            <span class="material-symbols-outlined text-lg">groups</span>
+            Clients
+          </div>
+          <p id="totalClients" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">3</p>
+        </div>
       </div>
+
+      <!-- Performance Chart -->
+      <section
+        class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6 mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-2xl">trending_up</span>
+            <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Training Performance</h2>
+          </div>
+          <button id="refreshChart" class="text-text-secondary-light hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">refresh</span>
+          </button>
+        </div>
+        <div class="h-80">
+          <canvas id="metricsChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Model Architecture & Artifacts -->
+      <div class="grid lg:grid-cols-2 gap-6 mb-6">
+
+        <!-- Architecture -->
+        <section
+          class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-primary">account_tree</span>
+            <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Model Architecture</h2>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center gap-4 p-4 bg-background-light dark:bg-[#1a2c35] rounded-xl">
+              <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">input</span>
+              </div>
+              <div>
+                <p class="font-medium text-text-main-light dark:text-text-main-dark">Input Layer</p>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">13 Clinical Features</p>
+              </div>
+            </div>
+            <div class="flex justify-center">
+              <span class="material-symbols-outlined text-text-secondary-light">arrow_downward</span>
+            </div>
+            <div class="flex items-center gap-4 p-4 bg-background-light dark:bg-[#1a2c35] rounded-xl">
+              <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">layers</span>
+              </div>
+              <div>
+                <p class="font-medium text-text-main-light dark:text-text-main-dark">Hidden Layers</p>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Dense(128) → ReLU →
+                  Dropout(0.3) → Dense(64) → ReLU → Dropout(0.2) → Dense(32) → ReLU</p>
+              </div>
+            </div>
+            <div class="flex justify-center">
+              <span class="material-symbols-outlined text-text-secondary-light">arrow_downward</span>
+            </div>
+            <div class="flex items-center gap-4 p-4 bg-background-light dark:bg-[#1a2c35] rounded-xl">
+              <div class="size-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500">
+                <span class="material-symbols-outlined">output</span>
+              </div>
+              <div>
+                <p class="font-medium text-text-main-light dark:text-text-main-dark">Output Layer</p>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Binary Classification
+                  (Sigmoid)</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Download Artifacts -->
+        <section
+          class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-primary">inventory_2</span>
+            <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Download Artifacts</h2>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-background-light dark:bg-[#1a2c35] rounded-xl">
+              <div class="flex items-center gap-4">
+                <div class="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                  <span class="material-symbols-outlined">model_training</span>
+                </div>
+                <div>
+                  <p class="font-medium text-text-main-light dark:text-text-main-dark">Trained Model</p>
+                  <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">global_model.h5</p>
+                </div>
+              </div>
+              <button id="downloadModelBtn"
+                class="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                <span class="material-symbols-outlined text-lg">download</span>
+                Download
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-background-light dark:bg-[#1a2c35] rounded-xl">
+              <div class="flex items-center gap-4">
+                <div class="size-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500">
+                  <span class="material-symbols-outlined">table_chart</span>
+                </div>
+                <div>
+                  <p class="font-medium text-text-main-light dark:text-text-main-dark">Training Metrics</p>
+                  <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">metrics.csv</p>
+                </div>
+              </div>
+              <button id="downloadMetricsBtn"
+                class="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors">
+                <span class="material-symbols-outlined text-lg">download</span>
+                Download
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Privacy Note -->
+      <section class="bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-6">
+        <div class="flex items-start gap-4">
+          <span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
+          <div>
+            <h3 class="font-semibold text-text-main-light dark:text-text-main-dark mb-2">Privacy-Preserving Training
+            </h3>
+            <ul class="text-text-secondary-light dark:text-text-secondary-dark text-sm space-y-1">
+              <li>• Raw patient data never leaves the local clients</li>
+              <li>• Only encrypted model updates are shared</li>
+              <li>• Differential privacy noise is added for extra protection</li>
+              <li>• HIPAA and GDPR compliant architecture</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="mt-auto pt-8 text-center text-text-secondary-light dark:text-text-secondary-dark text-sm">
+        © 2025 AFLCP Project. Privacy-Preserving Federated Learning for Healthcare.
+      </footer>
 
     </div>
-  </header>
-
-  <!-- ================= MAIN ================= -->
-  <main class="max-w-6xl mx-auto px-6 py-10 space-y-8">
-
-    <!-- ===== MODEL OVERVIEW ===== -->
-    <section class="bg-white rounded-xl shadow p-8">
-      <h1 class="text-2xl font-bold mb-2">Global Federated Model Overview</h1>
-      <p class="text-gray-600 leading-relaxed">
-        This page provides insights into the final global model generated using the
-        Asynchronous Federated Learning with Communication Preservation (AFLCP)
-        framework. The model aggregates knowledge from multiple decentralized clients
-        while preserving data privacy.
-      </p>
-    </section>
-
-    <!-- ===== ARCHITECTURE ===== -->
-    <section class="bg-white rounded-xl shadow p-8">
-      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-        <span class="material-icons text-blue-600">account_tree</span>
-        Model Architecture
-      </h2>
-
-      <div class="grid md:grid-cols-3 gap-6 text-center">
-        <div class="border rounded-lg p-4">
-          <h3 class="font-medium mb-1">Input Layer</h3>
-          <p class="text-sm text-gray-600">Patient Clinical Features</p>
-        </div>
-
-        <div class="border rounded-lg p-4">
-          <h3 class="font-medium mb-1">Hidden Layers</h3>
-          <p class="text-sm text-gray-600">
-            Dense Layers with ReLU Activation
-          </p>
-        </div>
-
-        <div class="border rounded-lg p-4">
-          <h3 class="font-medium mb-1">Output Layer</h3>
-          <p class="text-sm text-gray-600">
-            Binary Classification (Risk / No Risk)
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== ARTIFACTS ===== -->
-    <section class="bg-white rounded-xl shadow p-8">
-      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-        <span class="material-icons text-blue-600">inventory_2</span>
-        Model Artifacts
-      </h2>
-
-      <table class="w-full text-sm">
-        <thead class="text-gray-500 border-b">
-          <tr>
-            <th class="text-left py-2">Artifact</th>
-            <th class="text-left py-2">Description</th>
-            <th class="text-right py-2">Action</th>
-          </tr>
-        </thead>
-
-        <tbody class="divide-y">
-          <tr>
-            <td class="py-3 font-medium">Global Model</td>
-            <td class="py-3 text-gray-600">
-              Trained federated neural network model (HDF5)
-            </td>
-            <td class="py-3 text-right">
-              <button id="downloadModelBtn" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
-                Download
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="py-3 font-medium">Training Metrics</td>
-            <td class="py-3 text-gray-600">
-              Accuracy, Precision, Recall, F1-Score across rounds
-            </td>
-            <td class="py-3 text-right">
-              <button id="downloadMetricsBtn" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
-                Download
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- ===== NOTES ===== -->
-    <section class="bg-white rounded-xl shadow p-8">
-      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-        <span class="material-icons text-blue-600">info</span>
-        Notes
-      </h2>
-
-      <ul class="list-disc pl-6 text-gray-600 space-y-2">
-        <li>The global model is trained without sharing raw patient data.</li>
-        <li>All preprocessing artifacts must be used during inference.</li>
-        <li>The model supports asynchronous client updates.</li>
-        <li>Robust aggregation and communication optimization are applied.</li>
-      </ul>
-    </section>
-
   </main>
 
-  <!-- ================= JAVASCRIPT ================= -->
+  <!-- JavaScript -->
   <script>
+    let metricsChart = null;
+
+    // Download buttons
     document.getElementById("downloadModelBtn").onclick = () => {
       window.location.href = "/download/model";
     };
@@ -152,12 +337,113 @@
     document.getElementById("downloadMetricsBtn").onclick = () => {
       window.location.href = "/download/metrics";
     };
-  </script>
 
-  <!-- ================= FOOTER ================= -->
-  <footer class="mt-16 py-6 text-center text-gray-500 text-sm">
-    © 2024 AFLCP Project. All Rights Reserved.
-  </footer>
+    document.getElementById("refreshChart").onclick = loadMetrics;
+
+    // Load metrics and create chart
+    async function loadMetrics() {
+      try {
+        const res = await fetch("/api/metrics");
+        const data = await res.json();
+
+        if (!data || !data.length) {
+          document.getElementById("bestAccuracy").innerText = "--%";
+          document.getElementById("bestF1").innerText = "--%";
+          document.getElementById("totalRounds").innerText = "--";
+          return;
+        }
+
+        // Update stats
+        const bestAcc = Math.max(...data.map(r => r.accuracy));
+        const bestF1 = Math.max(...data.map(r => r.f1));
+
+        document.getElementById("bestAccuracy").innerText = (bestAcc * 100).toFixed(1) + "%";
+        document.getElementById("bestF1").innerText = (bestF1 * 100).toFixed(1) + "%";
+        document.getElementById("totalRounds").innerText = data.length;
+
+        // Create chart
+        const ctx = document.getElementById("metricsChart").getContext("2d");
+
+        if (metricsChart) {
+          metricsChart.destroy();
+        }
+
+        metricsChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.map(r => `Round ${r.round}`),
+            datasets: [
+              {
+                label: 'Accuracy',
+                data: data.map(r => (r.accuracy * 100).toFixed(2)),
+                borderColor: '#1193d4',
+                backgroundColor: 'rgba(17, 147, 212, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#1193d4',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4
+              },
+              {
+                label: 'F1 Score',
+                data: data.map(r => (r.f1 * 100).toFixed(2)),
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  usePointStyle: true,
+                  padding: 20
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: false,
+                min: 0,
+                max: 100,
+                ticks: {
+                  callback: value => value + '%'
+                },
+                grid: {
+                  color: 'rgba(0,0,0,0.05)'
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            },
+            interaction: {
+              intersect: false,
+              mode: 'index'
+            }
+          }
+        });
+
+      } catch (err) {
+        console.error("Failed to load metrics", err);
+      }
+    }
+
+    // Initial load
+    loadMetrics();
+  </script>
 
 </body>
 

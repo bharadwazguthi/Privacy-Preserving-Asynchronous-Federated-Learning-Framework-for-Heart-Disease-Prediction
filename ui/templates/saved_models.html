@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AFLCP – Saved Models</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1193d4", "background-light": "#f6f7f8", "surface-light": "#ffffff",
+                        "text-main-light": "#111618", "text-secondary-light": "#617c89",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                }
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .model-card {
+            transition: all 0.3s;
+        }
+
+        .model-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light min-h-screen text-text-main-light flex overflow-hidden font-display">
+
+    <!-- Sidebar -->
+    <aside class="w-64 flex flex-col border-r border-[#dbe2e6] bg-surface-light h-screen sticky top-0 shrink-0 z-50">
+        <div class="p-6 border-b border-[#dbe2e6]">
+            <div class="flex gap-3 items-center">
+                <div class="bg-primary/10 rounded-full size-10 shrink-0 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-2xl">cardiology</span>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-lg font-bold leading-none">AFLCP</h1>
+                    <p class="text-text-secondary-light text-xs mt-1">CVD Prediction AI</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col gap-2 p-4 overflow-y-auto flex-1">
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+                href="/home">
+                <span class="material-symbols-outlined">dashboard</span>
+                <p class="text-sm font-medium">Dashboard</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+                href="/dashboard">
+                <span class="material-symbols-outlined">model_training</span>
+                <p class="text-sm font-medium">Train Model</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary" href="/saved-models">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">save</span>
+                <p class="text-sm font-medium">Saved Models</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+                href="/predict">
+                <span class="material-symbols-outlined">stethoscope</span>
+                <p class="text-sm font-medium">Predict</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+                href="/global-model">
+                <span class="material-symbols-outlined">bar_chart</span>
+                <p class="text-sm font-medium">Model Metrics</p>
+            </a>
+            <div class="my-2 border-t border-[#dbe2e6]"></div>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+                href="/about">
+                <span class="material-symbols-outlined">info</span>
+                <p class="text-sm font-medium">About</p>
+            </a>
+        </div>
+        <div class="p-4 border-t border-[#dbe2e6]">
+            <a href="/api/logout"
+                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors text-red-500">
+                <span class="material-symbols-outlined text-lg">logout</span><span
+                    class="text-sm font-medium">Logout</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-screen overflow-y-auto bg-background-light">
+        <div class="flex flex-col min-h-full p-8">
+
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-2">Saved Models</h1>
+                <p class="text-text-secondary-light">Manage your trained models. Load a saved model to use it directly
+                    for prediction without retraining.</p>
+            </div>
+
+            <!-- Info Box -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                <span class="material-symbols-outlined text-primary mt-0.5">info</span>
+                <div>
+                    <p class="text-sm font-medium text-primary">How to save a model</p>
+                    <p class="text-sm text-text-secondary-light mt-1">Train a model on the <strong>Train Model</strong>
+                        page, then click <strong>Save Trained Model</strong> after training completes. You can then load
+                        any saved model for predictions without retraining.</p>
+                </div>
+            </div>
+
+            <!-- Models Container -->
+            <div id="modelsContainer">
+                <div class="flex items-center justify-center py-16">
+                    <span
+                        class="material-symbols-outlined text-5xl text-text-secondary-light animate-spin">progress_activity</span>
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="statusMsg" class="hidden rounded-xl p-4 mb-4"></div>
+
+            <footer class="mt-auto pt-8 text-center text-text-secondary-light text-sm">
+                © 2025 AFLCP Project. Privacy-Preserving Federated Learning for Healthcare.
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        const modelsContainer = document.getElementById('modelsContainer');
+        const statusMsg = document.getElementById('statusMsg');
+
+        function showStatus(msg, type) {
+            statusMsg.className = type === 'success'
+                ? 'rounded-xl p-4 mb-4 bg-green-50 border border-green-200 text-green-600'
+                : 'rounded-xl p-4 mb-4 bg-red-50 border border-red-200 text-red-600';
+            statusMsg.innerHTML = msg;
+            statusMsg.classList.remove('hidden');
+            setTimeout(() => statusMsg.classList.add('hidden'), 5000);
+        }
+
+        async function loadModels() {
+            try {
+                const res = await fetch('/api/saved-models-list');
+                const data = await res.json();
+                const models = data.models;
+
+                if (!models.length) {
+                    modelsContainer.innerHTML = `
+            <div class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-12 text-center">
+              <span class="material-symbols-outlined text-6xl text-text-secondary-light/40 mb-4">folder_off</span>
+              <p class="text-lg font-semibold text-text-secondary-light">No Saved Models</p>
+              <p class="text-sm text-text-secondary-light mt-2">Train a model and save it to see it here.</p>
+              <a href="/dashboard" class="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                <span class="material-symbols-outlined">play_arrow</span> Go to Training
+              </a>
+            </div>`;
+                    return;
+                }
+
+                let html = `<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">`;
+                models.forEach(m => {
+                    const results = m.training_results || {};
+                    const acc = results.final_accuracy ? (results.final_accuracy * 100).toFixed(1) + '%' : 'N/A';
+                    const f1 = results.final_f1 ? (results.final_f1 * 100).toFixed(1) + '%' : 'N/A';
+                    const auc = results.final_auc ? (results.final_auc * 100).toFixed(1) + '%' : 'N/A';
+                    const rounds = results.total_rounds || 'N/A';
+                    const date = m.saved_at ? new Date(m.saved_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown';
+
+                    html += `
+            <div class="model-card bg-surface-light rounded-2xl border border-[#dbe2e6] p-6 flex flex-col">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="size-10 rounded-xl bg-gradient-to-br from-primary/20 to-indigo-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary">neurology</span>
+                  </div>
+                  <div>
+                    <h3 class="font-bold">${m.display_name}</h3>
+                    <p class="text-xs text-text-secondary-light">${date}</p>
+                  </div>
+                </div>
+                <span class="px-2 py-1 text-xs font-medium rounded-full ${m.has_model ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}">${m.has_model ? 'Ready' : 'Incomplete'}</span>
+              </div>
+
+              ${m.description ? `<p class="text-sm text-text-secondary-light mb-4">${m.description}</p>` : ''}
+
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-background-light rounded-lg p-3 text-center">
+                  <p class="text-xs text-text-secondary-light">Accuracy</p>
+                  <p class="text-lg font-bold text-primary">${acc}</p>
+                </div>
+                <div class="bg-background-light rounded-lg p-3 text-center">
+                  <p class="text-xs text-text-secondary-light">F1 Score</p>
+                  <p class="text-lg font-bold">${f1}</p>
+                </div>
+                <div class="bg-background-light rounded-lg p-3 text-center">
+                  <p class="text-xs text-text-secondary-light">AUC</p>
+                  <p class="text-lg font-bold">${auc}</p>
+                </div>
+                <div class="bg-background-light rounded-lg p-3 text-center">
+                  <p class="text-xs text-text-secondary-light">Rounds</p>
+                  <p class="text-lg font-bold">${rounds}</p>
+                </div>
+              </div>
+
+              <div class="flex gap-2 mt-auto">
+                <button onclick="loadModel('${m.name}')" class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm font-semibold transition-colors" ${!m.has_model ? 'disabled' : ''}>
+                  <span class="material-symbols-outlined text-lg">download</span> Load
+                </button>
+                <button onclick="deleteModel('${m.name}')" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-500 rounded-lg text-sm font-semibold transition-colors">
+                  <span class="material-symbols-outlined text-lg">delete</span>
+                </button>
+              </div>
+            </div>`;
+                });
+                html += '</div>';
+                modelsContainer.innerHTML = html;
+
+            } catch (e) {
+                modelsContainer.innerHTML = `<p class="text-red-500">Failed to load models: ${e.message}</p>`;
+            }
+        }
+
+        async function loadModel(name) {
+            if (!confirm(`Load model "${name}"? This will replace the current working model.`)) return;
+            try {
+                const res = await fetch('/api/load-model', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail);
+                showStatus(`✅ ${data.message} — You can now use it for predictions.`, 'success');
+            } catch (e) {
+                showStatus(`❌ ${e.message}`, 'error');
+            }
+        }
+
+        async function deleteModel(name) {
+            if (!confirm(`Delete model "${name}"? This cannot be undone.`)) return;
+            try {
+                const res = await fetch(`/api/saved-models/${name}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail);
+                showStatus(`✅ ${data.message}`, 'success');
+                loadModels();
+            } catch (e) {
+                showStatus(`❌ ${e.message}`, 'error');
+            }
+        }
+
+        loadModels();
+    </script>
+</body>
+
+</html>

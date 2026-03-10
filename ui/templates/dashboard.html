@@ -1,204 +1,630 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>AFLCP – Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>AFLCP – Train Model</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1193d4", "background-light": "#f6f7f8", "background-dark": "#101c22",
+            "surface-light": "#ffffff", "surface-dark": "#18262e",
+            "text-main-light": "#111618", "text-main-dark": "#e0e6e9",
+            "text-secondary-light": "#617c89", "text-secondary-dark": "#94aab5",
+          },
+          fontFamily: { "display": ["Inter", "sans-serif"] },
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
 
-  <!-- Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .logs-container {
+      font-family: 'Fira Code', 'Consolas', monospace;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cdd7db;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.toggle-slider {
+      background-color: #1193d4;
+    }
+
+    input:checked+.toggle-slider:before {
+      transform: translateX(20px);
+    }
+  </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body
+  class="bg-background-light dark:bg-background-dark min-h-screen text-text-main-light dark:text-text-main-dark flex overflow-hidden font-display">
 
-<!-- ================= TOP NAV ================= -->
-<header class="bg-white shadow-sm">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-    <div class="flex items-center gap-2">
-      <span class="material-icons text-blue-600 text-3xl">psychology</span>
-      <span class="text-xl font-bold">AFLCP</span>
-    </div>
-
-    <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
-      <a href="/dashboard" class="text-blue-600">Dashboard</a>
-      <a href="#" class="hover:text-blue-600">Training</a>
-      <a href="#" class="hover:text-blue-600">Metrics</a>
-      <a href="#" class="hover:text-blue-600">Logs</a>
-    </nav>
-
-    <div class="flex items-center gap-4">
-      <span class="material-icons text-gray-500">notifications</span>
-      <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9"/>
-    </div>
-
-  </div>
-</header>
-
-<!-- ================= MAIN ================= -->
-<main class="max-w-7xl mx-auto px-6 py-10">
-
-  <!-- ===== HERO CARD ===== -->
-  <div class="bg-white rounded-xl shadow p-8 mb-8">
-    <h1 class="text-2xl font-bold mb-2">
-      Novel Asynchronous Federated Learning Framework (AFLCP)
-    </h1>
-    <p class="text-gray-600 mb-6">
-      This application facilitates training, monitoring, and evaluation of a federated
-      learning model for cardiovascular disease prediction.
-    </p>
-
-    <div class="flex gap-4">
-      <button id="startTrainingBtn"
-        class="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
-        <span class="material-icons">play_arrow</span>
-        Start Training
-      </button>
-
-      <button id="monitorBtn"
-        class="flex items-center gap-2 bg-blue-100 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-200 transition">
-        <span class="material-icons">bar_chart</span>
-        Monitor Progress
-      </button>
-    </div>
-
-    <p id="trainStatus" class="text-sm mt-4"></p>
-  </div>
-
-  <!-- ===== LOGS + METRICS ===== -->
-  <div class="grid md:grid-cols-2 gap-6 mb-8">
-
-    <!-- Logs -->
-    <div class="bg-white rounded-xl shadow p-6">
-      <h2 class="font-semibold mb-4">Real-time Training Logs</h2>
-
-      <div id="logsBox"
-           class="bg-gray-100 rounded-lg p-4 h-52 overflow-y-auto text-sm font-mono text-gray-700 whitespace-pre-wrap">
-        Waiting for training to start...
+  <!-- Sidebar -->
+  <aside
+    class="w-64 flex flex-col border-r border-[#dbe2e6] dark:border-[#2a3c46] bg-surface-light dark:bg-surface-dark h-screen sticky top-0 shrink-0 z-50">
+    <div class="p-6 border-b border-[#dbe2e6] dark:border-[#2a3c46]">
+      <div class="flex gap-3 items-center">
+        <div class="bg-primary/10 rounded-full size-10 shrink-0 flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-2xl">cardiology</span>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-none">AFLCP</h1>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal mt-1">CVD Prediction AI
+          </p>
+        </div>
       </div>
     </div>
-
-    <!-- Metrics -->
-    <div class="bg-white rounded-xl shadow p-6">
-      <h2 class="font-semibold mb-4">Final Performance Metrics</h2>
-
-      <table class="w-full text-sm">
-        <thead class="text-gray-500">
-          <tr>
-            <th class="text-left py-2">Round</th>
-            <th class="text-right py-2">Accuracy</th>
-            <th class="text-right py-2">F1</th>
-          </tr>
-        </thead>
-        <tbody id="metricsTable">
-          <tr>
-            <td colspan="3" class="text-center text-gray-400 py-4">
-              No metrics yet
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="flex flex-col gap-2 p-4 overflow-y-auto flex-1">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/home">
+        <span class="material-symbols-outlined">dashboard</span>
+        <p class="text-sm font-medium">Dashboard</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary" href="/dashboard">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">model_training</span>
+        <p class="text-sm font-medium">Train Model</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/saved-models">
+        <span class="material-symbols-outlined">save</span>
+        <p class="text-sm font-medium">Saved Models</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/predict">
+        <span class="material-symbols-outlined">stethoscope</span>
+        <p class="text-sm font-medium">Predict</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/global-model">
+        <span class="material-symbols-outlined">bar_chart</span>
+        <p class="text-sm font-medium">Model Metrics</p>
+      </a>
+      <div class="my-2 border-t border-[#dbe2e6]"></div>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/about">
+        <span class="material-symbols-outlined">info</span>
+        <p class="text-sm font-medium">About</p>
+      </a>
     </div>
+    <div class="p-4 border-t border-[#dbe2e6]">
+      <a href="/api/logout"
+        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors text-red-500">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span class="text-sm font-medium">Logout</span>
+      </a>
+    </div>
+  </aside>
 
-  </div>
+  <!-- Main Content -->
+  <main class="flex-1 h-screen overflow-y-auto bg-background-light dark:bg-background-dark">
+    <div class="flex flex-col min-h-full p-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Train Federated Learning Model</h1>
+        <p class="text-text-secondary-light">Configure parameters, upload your dataset, and train the AFLCP model with
+          privacy-preserving federated learning.</p>
+      </div>
 
-  <!-- ===== DATASET UPLOAD ===== -->
-  <div class="bg-white rounded-xl shadow p-8 text-center border-2 border-dashed border-gray-200">
-    <span class="material-icons text-blue-600 text-5xl mb-4">cloud_upload</span>
-    <p class="font-medium mb-1">Upload a file or drag and drop</p>
-    <p class="text-gray-500 text-sm mb-4">CSV up to 10MB</p>
+      <!-- Step 1: Upload Dataset -->
+      <section class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">1
+          </div>
+          <h2 class="text-lg font-semibold">Upload Dataset</h2>
+        </div>
+        <div
+          class="border-2 border-dashed border-[#dbe2e6] rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
+          <span class="material-symbols-outlined text-5xl text-primary mb-4">cloud_upload</span>
+          <p class="font-medium mb-1">Upload a CSV file or drag and drop</p>
+          <p class="text-text-secondary-light text-sm mb-4">Heart disease dataset (CSV up to 25MB)</p>
+          <input id="datasetInput" type="file" accept=".csv" class="hidden" />
+          <button id="uploadBtn"
+            class="inline-flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
+            <span class="material-symbols-outlined text-xl">upload_file</span> Select File
+          </button>
+          <p id="uploadStatus" class="text-sm mt-4"></p>
+        </div>
+      </section>
 
-    <input id="datasetInput" type="file" accept=".csv" class="hidden"/>
+      <!-- Step 2: Configuration -->
+      <section class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">2
+          </div>
+          <h2 class="text-lg font-semibold">Training Configuration</h2>
+          <span class="text-text-secondary-light text-sm">(Customize all federated learning parameters)</span>
+        </div>
 
-    <button id="uploadBtn"
-      class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-      Upload Dataset
-    </button>
+        <!-- Basic Settings -->
+        <div class="mb-6">
+          <h3
+            class="text-sm font-semibold text-text-secondary-light uppercase tracking-wide mb-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-lg">tune</span> Basic Settings
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Training Rounds</label>
+              <input type="number" id="cfgRounds" value="50" min="5" max="100"
+                class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Total Clients</label>
+              <input type="number" id="cfgClients" value="5" min="2" max="20"
+                class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Clients/Round</label>
+              <input type="number" id="cfgClientsPerRound" value="4" min="1" max="20"
+                class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Local Epochs</label>
+              <input type="number" id="cfgEpochs" value="10" min="1" max="20"
+                class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Batch Size</label>
+              <input type="number" id="cfgBatch" value="16" min="8" max="128"
+                class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+          </div>
+        </div>
 
-    <p id="uploadStatus" class="text-sm mt-3"></p>
-  </div>
+        <!-- Privacy Settings -->
+        <div class="mb-6">
+          <h3
+            class="text-sm font-semibold text-text-secondary-light uppercase tracking-wide mb-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-lg">shield</span> Privacy Settings
+          </h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="p-4 rounded-xl bg-background-light border border-[#e8edf0]">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-semibold">Differential Privacy</span>
+                <label class="toggle-switch"><input type="checkbox" id="cfgDP" checked><span
+                    class="toggle-slider"></span></label>
+              </div>
+              <div id="dpOptions" class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs text-text-secondary-light mb-1">Noise σ</label>
+                  <input type="number" id="cfgDPSigma" value="0.01" step="0.01" min="0.01" max="2"
+                    class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                  <label class="block text-xs text-text-secondary-light mb-1">Clip Norm</label>
+                  <input type="number" id="cfgDPClip" value="3.0" step="0.5" min="0.5" max="5"
+                    class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary">
+                </div>
+              </div>
+            </div>
+            <div class="p-4 rounded-xl bg-background-light border border-[#e8edf0]">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-semibold">Top-K Sparsification</span>
+                <label class="toggle-switch"><input type="checkbox" id="cfgTopK" checked><span
+                    class="toggle-slider"></span></label>
+              </div>
+              <div id="topkOptions">
+                <label class="block text-xs text-text-secondary-light mb-1">Top-K Fraction</label>
+                <input type="number" id="cfgTopKFrac" value="0.5" step="0.01" min="0.01" max="1"
+                  class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary">
+              </div>
+            </div>
+          </div>
+        </div>
 
-</main>
+        <!-- Advanced Settings -->
+        <div>
+          <h3
+            class="text-sm font-semibold text-text-secondary-light uppercase tracking-wide mb-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-lg">settings</span> Advanced Settings
+          </h3>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-4 rounded-xl bg-background-light border border-[#e8edf0]">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-semibold">FedProx</span>
+                <label class="toggle-switch"><input type="checkbox" id="cfgFedProx"><span
+                    class="toggle-slider"></span></label>
+              </div>
+              <div id="fedproxOptions" style="display:none">
+                <label class="block text-xs text-text-secondary-light mb-1">μ value</label>
+                <input type="number" id="cfgFedProxMu" value="0.01" step="0.001" min="0.001" max="0.1"
+                  class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Deep/Shallow Delta</label>
+              <input type="number" id="cfgDelta" value="1" min="1" max="10"
+                class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Server Learning Rate</label>
+              <input type="number" id="cfgAlpha" value="0.2" step="0.05" min="0.05" max="1"
+                class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-text-secondary-light mb-1">Aggregation</label>
+              <select id="cfgRobust" class="w-full border border-[#dbe2e6] bg-white rounded-lg px-3 py-2 text-sm">
+                <option value="none">Mean</option>
+                <option value="median">Median</option>
+                <option value="trimmed">Trimmed Mean</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
 
-<!-- ================= JS ================= -->
-<script>
-const datasetInput = document.getElementById("datasetInput");
-const uploadBtn = document.getElementById("uploadBtn");
-const uploadStatus = document.getElementById("uploadStatus");
-const startTrainingBtn = document.getElementById("startTrainingBtn");
-const trainStatus = document.getElementById("trainStatus");
-const logsBox = document.getElementById("logsBox");
-const metricsTable = document.getElementById("metricsTable");
+      <!-- Step 3: Train -->
+      <section class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">3
+          </div>
+          <h2 class="text-lg font-semibold">Start Training</h2>
+        </div>
+        <div class="flex flex-wrap gap-4 items-center">
+          <button id="startTrainingBtn"
+            class="inline-flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined">play_arrow</span> Start Training
+          </button>
+          <button id="saveModelBtn"
+            class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg shadow-emerald-500/20 hidden">
+            <span class="material-symbols-outlined">save</span> Save Trained Model
+          </button>
+        </div>
+        <div id="trainStatus" class="mt-4 text-sm"></div>
+        <!-- Progress Bar -->
+        <div id="progressContainer" class="mt-4 hidden">
+          <div class="flex justify-between text-sm text-text-secondary-light mb-2">
+            <span>Training Progress</span>
+            <span id="progressText">0%</span>
+          </div>
+          <div class="w-full bg-[#e0e6e9] rounded-full h-3">
+            <div id="progressBar"
+              class="bg-gradient-to-r from-primary to-blue-400 h-3 rounded-full transition-all duration-500"
+              style="width:0%"></div>
+          </div>
+          <p id="roundInfo" class="text-xs text-text-secondary-light mt-1"></p>
+        </div>
+      </section>
 
-let csvUploaded = false;
+      <!-- Save Model Modal -->
+      <div id="saveModelModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-500">save</span> Save Trained Model
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Model Name</label>
+              <input id="modelNameInput" type="text" placeholder="e.g., best_model_50rounds"
+                class="w-full border border-[#dbe2e6] rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Description (optional)</label>
+              <textarea id="modelDescInput" rows="2" placeholder="e.g., 50 rounds, DP+TopK, accuracy 92%"
+                class="w-full border border-[#dbe2e6] rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary"></textarea>
+            </div>
+            <div class="flex gap-3 justify-end">
+              <button onclick="closeSaveModal()"
+                class="px-4 py-2 bg-gray-100 rounded-lg font-medium hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onclick="confirmSaveModel()"
+                class="px-6 py-2 bg-emerald-500 text-white rounded-lg font-semibold hover:bg-emerald-600 transition-colors">Save
+                Model</button>
+            </div>
+          </div>
+          <p id="saveModelStatus" class="text-sm mt-3"></p>
+        </div>
+      </div>
 
-/* ---------------- CSV Upload ---------------- */
-uploadBtn.onclick = () => datasetInput.click();
+      <!-- Step 4: Logs and Metrics -->
+      <div class="grid lg:grid-cols-2 gap-6 mb-6">
+        <section class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-primary">terminal</span>
+            <h2 class="text-lg font-semibold">Real-time Training Logs</h2>
+          </div>
+          <div id="logsBox"
+            class="logs-container bg-[#1a1a2e] text-green-400 rounded-xl p-4 h-72 overflow-y-auto text-xs whitespace-pre-wrap">
+            Waiting for training to start...
+          </div>
+        </section>
+        <section class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-primary">analytics</span>
+            <h2 class="text-lg font-semibold">Performance Metrics</h2>
+          </div>
+          <div class="overflow-x-auto max-h-72 overflow-y-auto">
+            <table class="w-full text-sm">
+              <thead class="text-text-secondary-light border-b border-[#dbe2e6] sticky top-0 bg-surface-light">
+                <tr>
+                  <th class="text-left py-3 font-medium">Round</th>
+                  <th class="text-right py-3 font-medium">Accuracy</th>
+                  <th class="text-right py-3 font-medium">F1 Score</th>
+                  <th class="text-right py-3 font-medium">AUC</th>
+                </tr>
+              </thead>
+              <tbody id="metricsTable" class="divide-y divide-[#dbe2e6]">
+                <tr>
+                  <td colspan="4" class="text-center text-text-secondary-light py-8">No metrics yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
 
-datasetInput.onchange = async () => {
-  if (!datasetInput.files.length) return;
+      <footer class="mt-auto pt-8 text-center text-text-secondary-light text-sm">
+        © 2025 AFLCP Project. Privacy-Preserving Federated Learning for Healthcare.
+      </footer>
+    </div>
+  </main>
 
-  const formData = new FormData();
-  formData.append("file", datasetInput.files[0]);
+  <script>
+    const datasetInput = document.getElementById("datasetInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const uploadStatus = document.getElementById("uploadStatus");
+    const startTrainingBtn = document.getElementById("startTrainingBtn");
+    const saveModelBtn = document.getElementById("saveModelBtn");
+    const trainStatus = document.getElementById("trainStatus");
+    const logsBox = document.getElementById("logsBox");
+    const metricsTable = document.getElementById("metricsTable");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const roundInfo = document.getElementById("roundInfo");
 
-  uploadStatus.innerText = "Uploading...";
+    let csvUploaded = false;
+    let isTraining = false;
+    let logsInterval = null;
+    let metricsInterval = null;
+    let statusInterval = null;
 
-  const res = await fetch("/api/upload-csv", { method: "POST", body: formData });
-  const data = await res.json();
+    // Toggle visibility
+    document.getElementById('cfgDP').onchange = function () {
+      document.getElementById('dpOptions').style.display = this.checked ? 'grid' : 'none';
+    };
+    document.getElementById('cfgTopK').onchange = function () {
+      document.getElementById('topkOptions').style.display = this.checked ? 'block' : 'none';
+    };
+    document.getElementById('cfgFedProx').onchange = function () {
+      document.getElementById('fedproxOptions').style.display = this.checked ? 'block' : 'none';
+    };
 
-  if (!res.ok) {
-    uploadStatus.innerText = data.error || "Upload failed";
-    return;
-  }
+    /* CSV Upload */
+    uploadBtn.onclick = () => datasetInput.click();
+    datasetInput.onchange = async () => {
+      if (!datasetInput.files.length) return;
+      const formData = new FormData();
+      formData.append("file", datasetInput.files[0]);
+      uploadStatus.innerHTML = '<span class="text-primary">⏳ Uploading...</span>';
+      const res = await fetch("/api/upload-csv", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) {
+        uploadStatus.innerHTML = `<span class="text-red-500">❌ ${data.detail || "Upload failed"}</span>`;
+        return;
+      }
+      csvUploaded = true;
+      uploadStatus.innerHTML = `<span class="text-green-500 font-medium">✅ Uploaded: ${data.rows} rows, ${data.columns} columns</span>`;
+    };
 
-  csvUploaded = true;
-  uploadStatus.innerText = "✅ CSV uploaded successfully";
-};
+    /* Get training config */
+    function getConfig() {
+      return {
+        rounds: parseInt(document.getElementById('cfgRounds').value),
+        num_clients: parseInt(document.getElementById('cfgClients').value),
+        clients_per_round: parseInt(document.getElementById('cfgClientsPerRound').value),
+        local_epochs: parseInt(document.getElementById('cfgEpochs').value),
+        local_batch: parseInt(document.getElementById('cfgBatch').value),
+        use_dp: document.getElementById('cfgDP').checked,
+        dp_sigma: parseFloat(document.getElementById('cfgDPSigma').value),
+        dp_clip: parseFloat(document.getElementById('cfgDPClip').value),
+        use_topk: document.getElementById('cfgTopK').checked,
+        topk_frac: parseFloat(document.getElementById('cfgTopKFrac').value),
+        use_fedprox: document.getElementById('cfgFedProx').checked,
+        fedprox_mu: parseFloat(document.getElementById('cfgFedProxMu').value),
+        delta: parseInt(document.getElementById('cfgDelta').value),
+        server_alpha: parseFloat(document.getElementById('cfgAlpha').value),
+        robust: document.getElementById('cfgRobust').value,
+      };
+    }
 
-/* ---------------- Start Training ---------------- */
-startTrainingBtn.onclick = async () => {
-  if (!csvUploaded) {
-    alert("Please upload a CSV file first");
-    return;
-  }
+    /* Start Training */
+    startTrainingBtn.onclick = async () => {
+      if (!csvUploaded) { alert("Please upload a CSV file first"); return; }
+      const config = getConfig();
 
-  trainStatus.innerText = "🚀 Training started...";
-  await fetch("/api/start-training", { method: "POST" });
-};
+      startTrainingBtn.disabled = true;
+      startTrainingBtn.classList.add("opacity-50", "cursor-not-allowed");
+      saveModelBtn.classList.add("hidden");
+      trainStatus.innerHTML = '<span class="text-primary font-medium">🚀 Training started with ' + config.rounds + ' rounds...</span>';
+      logsBox.innerText = "Initializing training...";
+      metricsTable.innerHTML = '<tr><td colspan="4" class="text-center text-text-secondary-light py-4">Training in progress...</td></tr>';
+      progressContainer.classList.remove("hidden");
+      progressBar.style.width = "0%";
+      progressText.innerText = "0%";
 
-/* ---------------- Logs Polling ---------------- */
-setInterval(async () => {
-  const res = await fetch("/api/logs");
-  const data = await res.json();
-  logsBox.innerText = data.logs || "Waiting for logs...";
-}, 2000);
+      await fetch("/api/start-training", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(config)
+      });
+      isTraining = true;
+      startPolling();
+    };
 
-/* ---------------- Metrics Polling ---------------- */
-setInterval(async () => {
-  const res = await fetch("/api/metrics");
-  const rows = await res.json();
+    /* Polling */
+    function startPolling() {
+      stopPolling();
+      logsInterval = setInterval(fetchLogs, 1000);
+      metricsInterval = setInterval(fetchMetrics, 2000);
+      statusInterval = setInterval(checkTrainingStatus, 2000);
+      fetchLogs(); fetchMetrics();
+    }
+    function stopPolling() {
+      if (logsInterval) clearInterval(logsInterval);
+      if (metricsInterval) clearInterval(metricsInterval);
+      if (statusInterval) clearInterval(statusInterval);
+    }
 
-  if (!rows.length) return;
+    async function fetchLogs() {
+      try {
+        const res = await fetch("/api/logs");
+        const data = await res.json();
+        const logs = data.logs || "Waiting for logs...";
+        if (logsBox.innerText !== logs) {
+          logsBox.innerText = logs;
+          logsBox.scrollTop = logsBox.scrollHeight;
+        }
+      } catch (e) { }
+    }
 
-  metricsTable.innerHTML = "";
-  rows.forEach(r => {
-    metricsTable.innerHTML += `
-      <tr>
-        <td class="py-1">${r.round}</td>
-        <td class="py-1 text-right">${r.accuracy.toFixed(4)}</td>
-        <td class="py-1 text-right">${r.f1.toFixed(4)}</td>
-      </tr>`;
-  });
-}, 4000);
-</script>
+    async function fetchMetrics() {
+      try {
+        const res = await fetch("/api/metrics");
+        const rows = await res.json();
+        if (!rows || !rows.length) return;
+        metricsTable.innerHTML = "";
+        const totalRounds = parseInt(document.getElementById('cfgRounds').value);
+        rows.forEach(r => {
+          const auc = r.auc && !isNaN(r.auc) ? (r.auc * 100).toFixed(2) + "%" : "N/A";
+          const accColor = r.accuracy >= 0.9 ? 'text-green-600 font-semibold' : r.accuracy >= 0.8 ? 'text-primary font-medium' : '';
+          metricsTable.innerHTML += `
+            <tr class="hover:bg-background-light transition-colors">
+              <td class="py-2 font-medium">${r.round}</td>
+              <td class="py-2 text-right ${accColor}">${(r.accuracy * 100).toFixed(2)}%</td>
+              <td class="py-2 text-right">${(r.f1 * 100).toFixed(2)}%</td>
+              <td class="py-2 text-right">${auc}</td>
+            </tr>`;
+        });
+        const progress = Math.min((rows.length / totalRounds) * 100, 100);
+        progressBar.style.width = progress + "%";
+        progressText.innerText = Math.round(progress) + "%";
+        roundInfo.innerText = `Round ${rows.length} of ${totalRounds} completed`;
+      } catch (e) { }
+    }
 
-<!-- ================= FOOTER ================= -->
-<footer class="mt-16 py-6 text-center text-gray-500 text-sm">
-  © 2024 AFLCP Project. All Rights Reserved.
-</footer>
+    async function checkTrainingStatus() {
+      try {
+        const res = await fetch("/api/training-status");
+        const status = await res.json();
+        if (status.completed) {
+          isTraining = false;
+          stopPolling();
+          trainStatus.innerHTML = '<span class="text-green-500 font-semibold">✅ Training completed successfully!</span>';
+          startTrainingBtn.disabled = false;
+          startTrainingBtn.classList.remove("opacity-50", "cursor-not-allowed");
+          saveModelBtn.classList.remove("hidden");
+          progressBar.style.width = "100%";
+          progressText.innerText = "100%";
+          fetchLogs(); fetchMetrics();
+        } else if (status.error) {
+          isTraining = false; stopPolling();
+          trainStatus.innerHTML = `<span class="text-red-500 font-semibold">❌ Training failed: ${status.error}</span>`;
+          startTrainingBtn.disabled = false;
+          startTrainingBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+      } catch (e) { }
+    }
 
+    /* Save Model */
+    saveModelBtn.onclick = () => {
+      document.getElementById('saveModelModal').classList.remove('hidden');
+      document.getElementById('modelNameInput').value = 'model_' + new Date().toISOString().slice(0, 16).replace(/[-T:]/g, '_');
+    };
+    function closeSaveModal() { document.getElementById('saveModelModal').classList.add('hidden'); }
+
+    async function confirmSaveModel() {
+      const name = document.getElementById('modelNameInput').value.trim();
+      const desc = document.getElementById('modelDescInput').value.trim();
+      if (!name) { alert('Please enter a model name'); return; }
+      const statusEl = document.getElementById('saveModelStatus');
+      statusEl.innerHTML = '<span class="text-primary">Saving...</span>';
+      try {
+        const res = await fetch('/api/save-model', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description: desc })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail);
+        statusEl.innerHTML = '<span class="text-green-500 font-semibold">✅ Model saved successfully!</span>';
+        setTimeout(closeSaveModal, 1500);
+      } catch (e) {
+        statusEl.innerHTML = `<span class="text-red-500">❌ ${e.message}</span>`;
+      }
+    }
+
+    /* Initial load */
+    fetchMetrics();
+    setInterval(fetchLogs, 3000);
+    setInterval(fetchMetrics, 5000);
+  </script>
 </body>
+
 </html>

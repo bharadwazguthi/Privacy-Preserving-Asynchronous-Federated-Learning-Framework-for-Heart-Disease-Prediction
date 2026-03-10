@@ -1,214 +1,321 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>AFLCP – Prediction</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>AFLCP – Predict</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1193d4", "background-light": "#f6f7f8", "surface-light": "#ffffff",
+            "text-main-light": "#111618", "text-secondary-light": "#617c89",
+          },
+          fontFamily: { "display": ["Inter", "sans-serif"] },
+        }
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
 
-  <!-- Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .tab-btn {
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      background: #1193d4;
+      color: white;
+      box-shadow: 0 4px 12px rgba(17, 147, 212, 0.3);
+    }
+
+    .patient-card {
+      transition: all 0.2s;
+    }
+
+    .patient-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-background-light min-h-screen text-text-main-light flex overflow-hidden font-display">
 
-  <!-- ================= NAVBAR ================= -->
-  <header class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-      <div class="flex items-center gap-2">
-        <span class="material-icons text-blue-600 text-3xl">flag</span>
-        <span class="text-xl font-bold">AFLCP</span>
+  <!-- Sidebar -->
+  <aside class="w-64 flex flex-col border-r border-[#dbe2e6] bg-surface-light h-screen sticky top-0 shrink-0 z-50">
+    <div class="p-6 border-b border-[#dbe2e6]">
+      <div class="flex gap-3 items-center">
+        <div class="bg-primary/10 rounded-full size-10 shrink-0 flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-2xl">cardiology</span>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-lg font-bold leading-none">AFLCP</h1>
+          <p class="text-text-secondary-light text-xs mt-1">CVD Prediction AI</p>
+        </div>
       </div>
-
-      <nav class="hidden md:flex gap-8 text-gray-600 font-medium">
-        <a href="/" class="hover:text-blue-600">Home</a>
-        <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
-        <a href="/predict" class="text-blue-600">Predict</a>
-      </nav>
-
-      <div class="flex items-center gap-4">
-        <span class="material-icons text-gray-500">search</span>
-        <img src="https://i.pravatar.cc/40" class="rounded-full w-9 h-9" />
-      </div>
-
     </div>
-  </header>
+    <div class="flex flex-col gap-2 p-4 overflow-y-auto flex-1">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/home">
+        <span class="material-symbols-outlined">dashboard</span>
+        <p class="text-sm font-medium">Dashboard</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/dashboard">
+        <span class="material-symbols-outlined">model_training</span>
+        <p class="text-sm font-medium">Train Model</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/saved-models">
+        <span class="material-symbols-outlined">save</span>
+        <p class="text-sm font-medium">Saved Models</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary" href="/predict">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">stethoscope</span>
+        <p class="text-sm font-medium">Predict</p>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/global-model">
+        <span class="material-symbols-outlined">bar_chart</span>
+        <p class="text-sm font-medium">Model Metrics</p>
+      </a>
+      <div class="my-2 border-t border-[#dbe2e6]"></div>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary-light hover:bg-background-light transition-colors"
+        href="/about">
+        <span class="material-symbols-outlined">info</span>
+        <p class="text-sm font-medium">About</p>
+      </a>
+    </div>
+    <div class="p-4 border-t border-[#dbe2e6]">
+      <a href="/api/logout"
+        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors text-red-500">
+        <span class="material-symbols-outlined text-lg">logout</span><span class="text-sm font-medium">Logout</span></a>
+    </div>
+  </aside>
 
-  <!-- ================= MAIN ================= -->
-  <main class="max-w-5xl mx-auto px-6 py-10">
+  <!-- Main Content -->
+  <main class="flex-1 h-screen overflow-y-auto bg-background-light">
+    <div class="flex flex-col min-h-full p-8">
 
-    <div class="bg-white rounded-xl shadow p-8">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold mb-2">Cardiovascular Health Assessment</h1>
+        <p class="text-text-secondary-light">Predict heart disease risk for individual patients or upload a CSV for
+          batch predictions.</p>
+      </div>
 
-      <h1 class="text-2xl font-bold mb-2">Cardiovascular Health Assessment</h1>
-      <p class="text-gray-600 mb-8">
-        Enter your health parameters below to predict the probability of heart disease.
-      </p>
-
-      <!-- ================= FORM ================= -->
-      <form id="predictionForm" class="grid md:grid-cols-2 gap-6">
-
-        <!-- Age -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Age</label>
-          <input type="number" name="age" id="age" placeholder="e.g., 52" class="w-full border rounded-lg px-4 py-2"
-            required>
-        </div>
-
-        <!-- Sex -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Sex</label>
-          <select name="sex" id="sex" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Sex</option>
-            <option value="1">Male</option>
-            <option value="0">Female</option>
-          </select>
-        </div>
-
-        <!-- Chest Pain Type -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Chest Pain Type</label>
-          <select name="cp" id="cp" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Type</option>
-            <option value="0">Typical Angina</option>
-            <option value="1">Atypical Angina</option>
-            <option value="2">Non-anginal Pain</option>
-            <option value="3">Asymptomatic</option>
-          </select>
-        </div>
-
-        <!-- Resting Blood Pressure -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Resting Blood Pressure (mm Hg)</label>
-          <input type="number" name="trestbps" id="trestbps" placeholder="e.g., 120"
-            class="w-full border rounded-lg px-4 py-2" required>
-        </div>
-
-        <!-- Serum Cholesterol -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Serum Cholesterol (mg/dl)</label>
-          <input type="number" name="chol" id="chol" placeholder="e.g., 211" class="w-full border rounded-lg px-4 py-2"
-            required>
-        </div>
-
-        <!-- Fasting Blood Sugar -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Fasting Blood Sugar &gt; 120 mg/dl</label>
-          <select name="fbs" id="fbs" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Option</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-          </select>
-        </div>
-
-        <!-- Resting ECG Results -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Resting ECG Results</label>
-          <select name="restecg" id="restecg" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Result</option>
-            <option value="0">Normal</option>
-            <option value="1">ST-T Abnormality</option>
-            <option value="2">Left Ventricular Hypertrophy</option>
-          </select>
-        </div>
-
-        <!-- Maximum Heart Rate -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Maximum Heart Rate Achieved</label>
-          <input type="number" name="thalach" id="thalach" placeholder="e.g., 142"
-            class="w-full border rounded-lg px-4 py-2" required>
-        </div>
-
-        <!-- Exercise Induced Angina -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Exercise Induced Angina</label>
-          <select name="exang" id="exang" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Option</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-          </select>
-        </div>
-
-        <!-- ST Depression -->
-        <div>
-          <label class="block text-sm font-medium mb-1">ST Depression Induced by Exercise</label>
-          <input type="number" step="0.1" name="oldpeak" id="oldpeak" placeholder="e.g., 1.5"
-            class="w-full border rounded-lg px-4 py-2" required>
-        </div>
-
-        <!-- Slope -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Slope of the Peak Exercise ST Segment</label>
-          <select name="slope" id="slope" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Slope</option>
-            <option value="0">Upsloping</option>
-            <option value="1">Flat</option>
-            <option value="2">Downsloping</option>
-          </select>
-        </div>
-
-        <!-- Major Vessels -->
-        <div>
-          <label class="block text-sm font-medium mb-1">Major Vessels Colored by Fluoroscopy</label>
-          <select name="ca" id="ca" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Number</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-
-        <!-- Thalassemia -->
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium mb-1">Thalassemia</label>
-          <select name="thal" id="thal" class="w-full border rounded-lg px-4 py-2" required>
-            <option value="">Select Type</option>
-            <option value="1">Normal</option>
-            <option value="2">Fixed Defect</option>
-            <option value="3">Reversible Defect</option>
-          </select>
-        </div>
-
-      </form>
-
-      <!-- ================= ACTIONS ================= -->
-      <div class="flex justify-end gap-4 mt-8">
-        <button type="button" id="resetBtn" class="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-          Reset
+      <!-- Mode Tabs -->
+      <div class="flex gap-3 mb-6">
+        <button class="tab-btn active px-6 py-3 rounded-xl font-semibold text-sm" onclick="switchMode('single')"
+          id="singleTab">
+          <span class="inline-flex items-center gap-2"><span class="material-symbols-outlined text-lg">person</span>
+            Single Patient</span>
         </button>
-        <button type="button" id="predictBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-          Predict
+        <button
+          class="tab-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white border border-[#dbe2e6] text-text-secondary-light hover:bg-background-light"
+          onclick="switchMode('batch')" id="batchTab">
+          <span class="inline-flex items-center gap-2"><span
+              class="material-symbols-outlined text-lg">upload_file</span> CSV Batch Upload</span>
         </button>
       </div>
 
-      <!-- ================= RESULT ================= -->
-      <div id="resultSection" class="mt-10 border-t pt-6 hidden">
-        <h2 class="font-semibold mb-2">Prediction Result</h2>
-        <p class="text-gray-600">Probability of Heart Disease:</p>
+      <!-- Single Patient Form -->
+      <div id="singleMode">
+        <section class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-8 mb-6">
+          <div id="noModelWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-yellow-600">warning</span>
+              <p class="text-yellow-700 font-medium">No trained model found. Please <a href="/dashboard"
+                  class="underline hover:text-yellow-900">train a model</a> or <a href="/saved-models"
+                  class="underline hover:text-yellow-900">load a saved model</a> first.</p>
+            </div>
+          </div>
+          <form id="predictionForm" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full py-12 flex justify-center items-center">
+              <span class="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
+            </div>
+          </form>
+          <div class="flex justify-end gap-4 mt-8 pt-6 border-t border-[#dbe2e6]">
+            <button type="button" id="resetBtn"
+              class="px-6 py-3 bg-[#e0e6e9] rounded-lg font-medium hover:bg-[#d0d6d9] transition-colors">Reset
+              Form</button>
+            <button type="button" id="predictBtn"
+              class="inline-flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20">
+              <span class="material-symbols-outlined">psychology</span> Get Prediction
+            </button>
+          </div>
+        </section>
 
-        <div class="flex justify-between items-center mt-2">
-          <span id="probability" class="text-xl font-bold">--%</span>
-          <span id="riskLabel" class="px-4 py-1 rounded-full text-sm">
-            Calculating...
-          </span>
+        <!-- Single Result -->
+        <section id="resultSection" class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-8 mb-6 hidden">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="material-symbols-outlined text-primary text-3xl">monitoring</span>
+            <h2 class="text-xl font-bold">Prediction Result</h2>
+          </div>
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <p class="text-text-secondary-light mb-2">Probability of Heart Disease</p>
+              <p id="probability" class="text-4xl font-bold">--%</p>
+            </div>
+            <div id="riskLabel" class="px-6 py-3 rounded-full text-lg font-semibold">Calculating...</div>
+          </div>
+          <div class="mt-6 pt-6 border-t border-[#dbe2e6]">
+            <p class="text-sm text-text-secondary-light">
+              <span class="material-symbols-outlined text-sm align-middle">info</span>
+              Always consult a healthcare professional for medical decisions.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Batch CSV Mode -->
+      <div id="batchMode" class="hidden">
+        <section class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-8 mb-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">upload_file</span> Upload Patient Records CSV
+          </h2>
+          <p class="text-text-secondary-light text-sm mb-6">Upload a CSV file with patient records. The file should have
+            columns: age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal</p>
+          <div
+            class="border-2 border-dashed border-[#dbe2e6] rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
+            <span class="material-symbols-outlined text-5xl text-primary mb-4">table_chart</span>
+            <p class="font-medium mb-1">Upload patient records CSV</p>
+            <p class="text-text-secondary-light text-sm mb-4">CSV file with patient health parameters</p>
+            <input id="batchCsvInput" type="file" accept=".csv" class="hidden" />
+            <button id="batchUploadBtn"
+              class="inline-flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
+              <span class="material-symbols-outlined text-xl">upload_file</span> Select CSV File
+            </button>
+            <p id="batchStatus" class="text-sm mt-4"></p>
+          </div>
+          <div class="flex justify-end mt-6">
+            <button id="batchPredictBtn"
+              class="inline-flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled>
+              <span class="material-symbols-outlined">psychology</span> Run Batch Prediction
+            </button>
+          </div>
+        </section>
+
+        <!-- Batch Results -->
+        <div id="batchResults" class="hidden">
+          <!-- Summary -->
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-surface-light rounded-2xl border border-[#dbe2e6] p-6 text-center">
+              <p class="text-text-secondary-light text-sm">Total Patients</p>
+              <p id="totalPatients" class="text-3xl font-bold text-primary mt-1">0</p>
+            </div>
+            <div class="bg-red-50 rounded-2xl border border-red-200 p-6 text-center">
+              <p class="text-red-400 text-sm">Heart Disease Detected</p>
+              <p id="hdCount" class="text-3xl font-bold text-red-600 mt-1">0</p>
+            </div>
+            <div class="bg-green-50 rounded-2xl border border-green-200 p-6 text-center">
+              <p class="text-green-400 text-sm">No Heart Disease</p>
+              <p id="noHdCount" class="text-3xl font-bold text-green-600 mt-1">0</p>
+            </div>
+          </div>
+
+          <!-- Download Button -->
+          <div class="flex gap-4 mb-6">
+            <button id="downloadHdBtn"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-colors shadow-lg shadow-red-500/20">
+              <span class="material-symbols-outlined">download</span> Download Heart Disease Patients CSV
+            </button>
+            <button id="downloadAllBtn"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors">
+              <span class="material-symbols-outlined">download</span> Download All Results
+            </button>
+          </div>
+
+          <!-- Split View -->
+          <div class="grid lg:grid-cols-2 gap-6 mb-6">
+            <!-- Heart Disease Side -->
+            <div>
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-red-500 text-2xl">warning</span>
+                <h3 class="text-lg font-bold text-red-600">Heart Disease Detected</h3>
+              </div>
+              <div id="hdList" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+              </div>
+            </div>
+            <!-- No Heart Disease Side -->
+            <div>
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-green-500 text-2xl">check_circle</span>
+                <h3 class="text-lg font-bold text-green-600">No Heart Disease</h3>
+              </div>
+              <div id="noHdList" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- ================= ERROR MESSAGE ================= -->
-      <div id="errorSection" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg hidden">
-        <p id="errorMessage" class="text-red-600 text-sm"></p>
+      <!-- Error -->
+      <div id="errorSection" class="bg-red-50 border border-red-200 rounded-xl p-6 hidden">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-red-500">error</span>
+          <p id="errorMessage" class="text-red-600"></p>
+        </div>
       </div>
 
+      <footer class="mt-auto pt-8 text-center text-text-secondary-light text-sm">
+        © 2025 AFLCP Project. Privacy-Preserving Federated Learning for Healthcare.
+      </footer>
     </div>
-
   </main>
 
-  <!-- ================= JAVASCRIPT ================= -->
   <script>
+    // Tab switching
+    function switchMode(mode) {
+      const singleTab = document.getElementById('singleTab');
+      const batchTab = document.getElementById('batchTab');
+      const singleMode = document.getElementById('singleMode');
+      const batchMode = document.getElementById('batchMode');
+
+      if (mode === 'single') {
+        singleTab.classList.add('active');
+        singleTab.classList.remove('bg-white', 'border', 'border-[#dbe2e6]', 'text-text-secondary-light');
+        batchTab.classList.remove('active');
+        batchTab.classList.add('bg-white', 'border', 'border-[#dbe2e6]', 'text-text-secondary-light');
+        singleMode.classList.remove('hidden');
+        batchMode.classList.add('hidden');
+      } else {
+        batchTab.classList.add('active');
+        batchTab.classList.remove('bg-white', 'border', 'border-[#dbe2e6]', 'text-text-secondary-light');
+        singleTab.classList.remove('active');
+        singleTab.classList.add('bg-white', 'border', 'border-[#dbe2e6]', 'text-text-secondary-light');
+        batchMode.classList.remove('hidden');
+        singleMode.classList.add('hidden');
+      }
+    }
+
+    // ========== SINGLE PREDICTION ==========
     const form = document.getElementById("predictionForm");
     const predictBtn = document.getElementById("predictBtn");
     const resetBtn = document.getElementById("resetBtn");
@@ -218,8 +325,69 @@
     const errorSection = document.getElementById("errorSection");
     const errorMessage = document.getElementById("errorMessage");
 
-    // Field names that match the model's expected features
-    const fields = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"];
+    let dynamicFields = [];
+
+    // Common medical labels for better UX on standard datasets
+    const labelMap = {
+      age: { label: "Age", type: "number", step: "1" },
+      sex: { label: "Sex", type: "select", options: [{ val: 1, text: "Male" }, { val: 0, text: "Female" }] },
+      cp: { label: "Chest Pain Type (0-3)", type: "select", options: [{ val: 0, text: "Typical Angina" }, { val: 1, text: "Atypical Angina" }, { val: 2, text: "Non-anginal" }, { val: 3, text: "Asymptomatic" }] },
+      trestbps: { label: "Resting BP (mm Hg)", type: "number", step: "1" },
+      chol: { label: "Cholesterol (mg/dl)", type: "number", step: "1" },
+      fbs: { label: "Fasting Blood Sugar > 120", type: "select", options: [{ val: 1, text: "Yes" }, { val: 0, text: "No" }] },
+      restecg: { label: "Resting ECG (0-2)", type: "select", options: [{ val: 0, text: "Normal" }, { val: 1, text: "ST-T Abnormality" }, { val: 2, text: "LV Hypertrophy" }] },
+      thalach: { label: "Max Heart Rate", type: "number", step: "1" },
+      exang: { label: "Exercise Induced Angina", type: "select", options: [{ val: 1, text: "Yes" }, { val: 0, text: "No" }] },
+      oldpeak: { label: "ST Depression", type: "number", step: "0.1" },
+      slope: { label: "ST Slope (0-2)", type: "select", options: [{ val: 0, text: "Upsloping" }, { val: 1, text: "Flat" }, { val: 2, text: "Downsloping" }] },
+      ca: { label: "Major Vessels (0-3)", type: "select", options: [{ val: 0, text: "0" }, { val: 1, text: "1" }, { val: 2, text: "2" }, { val: 3, text: "3" }] },
+      thal: { label: "Thalassemia", type: "select", options: [{ val: 1, text: "Normal" }, { val: 2, text: "Fixed Defect" }, { val: 3, text: "Reversible Defect" }] }
+    };
+
+    // Auto-generate form based on current model features
+    async function loadDynamicForm() {
+      try {
+        const res = await fetch("/api/model-features");
+        const data = await res.json();
+        const features = data.features;
+
+        if (!features || features.length === 0) {
+          form.innerHTML = "";
+          document.getElementById('noModelWarning').classList.remove('hidden');
+          predictBtn.disabled = true;
+          return;
+        }
+
+        dynamicFields = features;
+        form.innerHTML = "";
+
+        features.forEach(f => {
+          const config = labelMap[f] || { label: f.charAt(0).toUpperCase() + f.slice(1).replace(/_/g, " "), type: "number", step: "any" };
+          let inputHTML = '';
+
+          if (config.type === 'select') {
+            const options = config.options.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            inputHTML = `<select name="${f}" id="${f}" class="w-full border border-[#dbe2e6] bg-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary" required><option value="">Select ${config.label}</option>${options}</select>`;
+          } else {
+            inputHTML = `<input type="number" step="${config.step}" name="${f}" id="${f}" placeholder="Enter ${config.label}" class="w-full border border-[#dbe2e6] bg-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary" required>`;
+          }
+
+          form.innerHTML += `
+            <div>
+              <label class="block text-sm font-medium mb-2">${config.label}</label>
+              ${inputHTML}
+            </div>
+          `;
+        });
+
+        predictBtn.disabled = false;
+      } catch (e) {
+        form.innerHTML = `<p class="text-red-500">Failed to load model features.</p>`;
+      }
+    }
+
+    // Initialize the dynamic form when page loads
+    loadDynamicForm();
 
     resetBtn.onclick = () => {
       form.reset();
@@ -228,78 +396,170 @@
     };
 
     predictBtn.onclick = async () => {
-      // Hide previous results/errors
       resultSection.classList.add("hidden");
       errorSection.classList.add("hidden");
+      if (!form.checkValidity()) { form.reportValidity(); return; }
 
-      // Validate form
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      // Collect form data
       const data = {};
-      fields.forEach(field => {
-        const el = document.getElementById(field);
-        const value = el.value;
-        // Convert to number
-        data[field] = parseFloat(value);
-      });
+      dynamicFields.forEach(f => { data[f] = parseFloat(document.getElementById(f).value); });
 
       try {
         predictBtn.disabled = true;
-        predictBtn.innerText = "Predicting...";
-
+        predictBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Predicting...';
         const res = await fetch("/api/predict", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         });
-
         const result = await res.json();
+        if (!res.ok) throw new Error(result.detail || "Prediction failed");
 
-        if (!res.ok) {
-          throw new Error(result.detail || "Prediction failed");
-        }
-
-        // Display result
         resultSection.classList.remove("hidden");
-
         const prob = result.probability_of_disease !== undefined
           ? (result.probability_of_disease * 100).toFixed(1)
           : (result.confidence * 100).toFixed(1);
-
         probability.innerText = prob + "%";
 
-        // Update risk label
-        const probValue = parseFloat(prob);
-        if (probValue >= 50) {
-          riskLabel.className = "bg-red-100 text-red-600 px-4 py-1 rounded-full text-sm";
-          riskLabel.innerText = "High Risk of Heart Disease";
-        } else if (probValue >= 30) {
-          riskLabel.className = "bg-yellow-100 text-yellow-600 px-4 py-1 rounded-full text-sm";
-          riskLabel.innerText = "Moderate Risk";
+        const pv = parseFloat(prob);
+        if (pv >= 50) {
+          riskLabel.className = "bg-red-100 text-red-600 px-6 py-3 rounded-full text-lg font-semibold";
+          riskLabel.innerText = "⚠️ High Risk";
+        } else if (pv >= 30) {
+          riskLabel.className = "bg-yellow-100 text-yellow-600 px-6 py-3 rounded-full text-lg font-semibold";
+          riskLabel.innerText = "⚡ Moderate Risk";
         } else {
-          riskLabel.className = "bg-green-100 text-green-600 px-4 py-1 rounded-full text-sm";
-          riskLabel.innerText = "Low Risk";
+          riskLabel.className = "bg-green-100 text-green-600 px-6 py-3 rounded-full text-lg font-semibold";
+          riskLabel.innerText = "✓ Low Risk";
         }
-
+        resultSection.scrollIntoView({ behavior: 'smooth' });
       } catch (err) {
         errorSection.classList.remove("hidden");
-        errorMessage.innerText = err.message || "An error occurred. Make sure the model is trained first.";
+        errorMessage.innerText = err.message || "Train model first.";
       } finally {
         predictBtn.disabled = false;
-        predictBtn.innerText = "Predict";
+        predictBtn.innerHTML = '<span class="material-symbols-outlined">psychology</span> Get Prediction';
       }
     };
+
+    // ========== BATCH CSV PREDICTION ==========
+    let batchFile = null;
+    let batchResultsData = null;
+
+    const batchCsvInput = document.getElementById("batchCsvInput");
+    const batchUploadBtn = document.getElementById("batchUploadBtn");
+    const batchPredictBtn = document.getElementById("batchPredictBtn");
+    const batchStatus = document.getElementById("batchStatus");
+
+    batchUploadBtn.onclick = () => batchCsvInput.click();
+    batchCsvInput.onchange = () => {
+      if (!batchCsvInput.files.length) return;
+      batchFile = batchCsvInput.files[0];
+      batchStatus.innerHTML = `<span class="text-green-500 font-medium">✅ Selected: ${batchFile.name}</span>`;
+      batchPredictBtn.disabled = false;
+    };
+
+    batchPredictBtn.onclick = async () => {
+      if (!batchFile) return;
+      batchPredictBtn.disabled = true;
+      batchPredictBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...';
+      errorSection.classList.add("hidden");
+
+      try {
+        const formData = new FormData();
+        formData.append("file", batchFile);
+        const res = await fetch("/api/predict-csv", { method: "POST", body: formData });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Prediction failed");
+
+        batchResultsData = data;
+        document.getElementById("batchResults").classList.remove("hidden");
+
+        // Summary
+        document.getElementById("totalPatients").innerText = data.total;
+        document.getElementById("hdCount").innerText = data.heart_disease_count;
+        document.getElementById("noHdCount").innerText = data.no_heart_disease_count;
+
+        // Render HD list
+        const hdList = document.getElementById("hdList");
+        hdList.innerHTML = "";
+        if (data.heart_disease.length === 0) {
+          hdList.innerHTML = '<p class="text-text-secondary-light text-center py-8">No heart disease patients detected.</p>';
+        } else {
+          data.heart_disease.forEach(p => {
+            hdList.innerHTML += createPatientCard(p, 'red');
+          });
+        }
+
+        // Render no-HD list
+        const noHdList = document.getElementById("noHdList");
+        noHdList.innerHTML = "";
+        if (data.no_heart_disease.length === 0) {
+          noHdList.innerHTML = '<p class="text-text-secondary-light text-center py-8">All patients have heart disease risk.</p>';
+        } else {
+          data.no_heart_disease.forEach(p => {
+            noHdList.innerHTML += createPatientCard(p, 'green');
+          });
+        }
+
+        document.getElementById("batchResults").scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        errorSection.classList.remove("hidden");
+        errorMessage.innerText = err.message;
+      } finally {
+        batchPredictBtn.disabled = false;
+        batchPredictBtn.innerHTML = '<span class="material-symbols-outlined">psychology</span> Run Batch Prediction';
+      }
+    };
+
+    function createPatientCard(p, color) {
+      const sex = p.sex == 1 ? 'Male' : 'Female';
+      const prob = (p.probability * 100).toFixed(1);
+      const borderColor = color === 'red' ? 'border-red-200 bg-red-50/50' : 'border-green-200 bg-green-50/50';
+      const probColor = color === 'red' ? 'text-red-600' : 'text-green-600';
+
+      return `
+        <div class="patient-card rounded-xl border ${borderColor} p-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-semibold">Patient #${p.patient_id}</p>
+              <p class="text-sm text-text-secondary-light">${sex}, Age ${p.age || 'N/A'}</p>
+            </div>
+            <div class="text-right">
+              <p class="${probColor} font-bold text-lg">${prob}%</p>
+              <p class="text-xs ${probColor}">${p.risk_level}</p>
+            </div>
+          </div>
+          <div class="mt-2 grid grid-cols-3 gap-2 text-xs text-text-secondary-light">
+            <span>BP: ${p.trestbps || 'N/A'}</span>
+            <span>Chol: ${p.chol || 'N/A'}</span>
+            <span>HR: ${p.thalach || 'N/A'}</span>
+          </div>
+        </div>`;
+    }
+
+    // Download handlers
+    document.getElementById("downloadHdBtn").onclick = () => {
+      window.location.href = "/api/download-hd-patients";
+    };
+
+    document.getElementById("downloadAllBtn").onclick = () => {
+      if (!batchResultsData) return;
+      const results = batchResultsData.all_results;
+      if (!results.length) return;
+      const headers = Object.keys(results[0]);
+      let csv = headers.join(',') + '\n';
+      results.forEach(r => {
+        csv += headers.map(h => {
+          const v = r[h];
+          return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
+        }).join(',') + '\n';
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'all_predictions.csv';
+      a.click();
+    };
   </script>
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="mt-16 py-6 text-center text-gray-500 text-sm">
-    © 2024 AFLCP Project. All Rights Reserved.
-  </footer>
-
 </body>
 
 </html>

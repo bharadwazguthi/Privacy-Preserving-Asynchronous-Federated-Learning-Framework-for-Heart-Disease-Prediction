@@ -5,3 +5,5 @@ numpy
 pandas
 scikit-learn
 python-multipart
+matplotlib
+jinja2
