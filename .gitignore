@@ -1,6 +1,6 @@
 # Mac OS
 .DS_Store
-*.DS_Store
+*/.DS_Store
 
 # Python
 __pycache__/
@@ -13,15 +13,24 @@ venv/
 env/
 .env
 
-# Database
+# Database (auto-created on startup via init_db)
 *.db
 
-# Data & Models
+# Uploaded data (user-uploaded CSVs at runtime)
 uploads/
+
+# Trained model weights & artifacts (generated during training)
 aflcp_weights/
 saved_models/
-*.h5
-*.pkl
-*.npy
-*.npz
-*.png
+
+# Training log (generated at runtime)
+training.log
+
+# Experiment results (testing only, not part of main app)
+results/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo

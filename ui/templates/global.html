@@ -2,6 +2,8 @@
 <html class="light" lang="en">
 
 <head>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>AFLCP – Model Metrics</title>
@@ -81,7 +83,7 @@
         </div>
         <div class="flex flex-col">
           <h1 class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-none">AFLCP</h1>
-          <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal mt-1">CVD Prediction AI
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal mt-1">Heart Disease Prediction AI
           </p>
         </div>
       </div>
@@ -156,44 +158,58 @@
       </section>
 
       <!-- Stats Cards -->
-      <div class="grid md:grid-cols-4 gap-4 mb-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
         <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
           <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
-            <span class="material-symbols-outlined text-lg">speed</span>
+            <span class="material-symbols-outlined text-lg text-blue-500">speed</span>
             Best Accuracy
           </div>
           <p id="bestAccuracy" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--%</p>
         </div>
         <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
           <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
-            <span class="material-symbols-outlined text-lg">check_circle</span>
+            <span class="material-symbols-outlined text-lg text-emerald-500">check_circle</span>
             Best F1 Score
           </div>
           <p id="bestF1" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--%</p>
         </div>
         <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
           <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
-            <span class="material-symbols-outlined text-lg">replay</span>
+            <span class="material-symbols-outlined text-lg text-violet-500">target</span>
+            Best Precision
+          </div>
+          <p id="bestPrecision" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--%</p>
+        </div>
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
+          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
+            <span class="material-symbols-outlined text-lg text-red-500">my_location</span>
+            Best Recall
+          </div>
+          <p id="bestRecall" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--%</p>
+        </div>
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
+          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
+            <span class="material-symbols-outlined text-lg text-amber-500">donut_large</span>
+            Best AUC
+          </div>
+          <p id="bestAUC" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--%</p>
+        </div>
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
+          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
+            <span class="material-symbols-outlined text-lg text-cyan-500">replay</span>
             Total Rounds
           </div>
           <p id="totalRounds" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">--</p>
         </div>
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#dbe2e6] dark:border-[#2a3c46] p-5">
-          <div class="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2">
-            <span class="material-symbols-outlined text-lg">groups</span>
-            Clients
-          </div>
-          <p id="totalClients" class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">3</p>
-        </div>
       </div>
 
-      <!-- Performance Chart -->
+      <!-- Classification Metrics Chart -->
       <section
         class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6 mb-6">
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-primary text-2xl">trending_up</span>
-            <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Training Performance</h2>
+            <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Classification Metrics</h2>
           </div>
           <button id="refreshChart" class="text-text-secondary-light hover:text-primary transition-colors">
             <span class="material-symbols-outlined">refresh</span>
@@ -201,6 +217,61 @@
         </div>
         <div class="h-80">
           <canvas id="metricsChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Loss & Communication Chart -->
+      <div class="grid lg:grid-cols-2 gap-6 mb-6">
+        <section
+          class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-pink-500 text-2xl">show_chart</span>
+            <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Evaluation Loss</h2>
+          </div>
+          <div class="h-64">
+            <canvas id="lossChart"></canvas>
+          </div>
+        </section>
+        <section
+          class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-teal-500 text-2xl">swap_vert</span>
+            <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Communication Cost</h2>
+          </div>
+          <div class="h-64">
+            <canvas id="commChart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <!-- Detailed Metrics Table -->
+      <section
+        class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#dbe2e6] dark:border-[#2a3c46] p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="material-symbols-outlined text-primary text-2xl">table_chart</span>
+          <h2 class="text-lg font-semibold text-text-main-light dark:text-text-main-dark">Round-by-Round Metrics</h2>
+        </div>
+        <div class="overflow-x-auto max-h-80 overflow-y-auto">
+          <table class="w-full text-sm">
+            <thead class="text-text-secondary-light border-b border-[#dbe2e6] sticky top-0 bg-surface-light dark:bg-surface-dark">
+              <tr>
+                <th class="text-left py-3 px-2 font-medium">Round</th>
+                <th class="text-right py-3 px-2 font-medium">Accuracy</th>
+                <th class="text-right py-3 px-2 font-medium">F1</th>
+                <th class="text-right py-3 px-2 font-medium">Precision</th>
+                <th class="text-right py-3 px-2 font-medium">Recall</th>
+                <th class="text-right py-3 px-2 font-medium">Specificity</th>
+                <th class="text-right py-3 px-2 font-medium">AUC</th>
+                <th class="text-right py-3 px-2 font-medium">Loss</th>
+                <th class="text-right py-3 px-2 font-medium">Comm (KB)</th>
+              </tr>
+            </thead>
+            <tbody id="metricsTableBody" class="divide-y divide-[#dbe2e6]">
+              <tr>
+                <td colspan="9" class="text-center text-text-secondary-light py-8">No metrics available. Train a model first.</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -328,6 +399,8 @@
   <!-- JavaScript -->
   <script>
     let metricsChart = null;
+    let lossChart = null;
+    let commChart = null;
 
     // Download buttons
     document.getElementById("downloadModelBtn").onclick = () => {
@@ -340,7 +413,12 @@
 
     document.getElementById("refreshChart").onclick = loadMetrics;
 
-    // Load metrics and create chart
+    function fmt(val, pct = true) {
+      if (val == null || isNaN(val)) return 'N/A';
+      return pct ? (val * 100).toFixed(1) + '%' : parseFloat(val).toFixed(4);
+    }
+
+    // Load metrics and create charts
     async function loadMetrics() {
       try {
         const res = await fetch("/api/metrics");
@@ -349,91 +427,219 @@
         if (!data || !data.length) {
           document.getElementById("bestAccuracy").innerText = "--%";
           document.getElementById("bestF1").innerText = "--%";
+          document.getElementById("bestPrecision").innerText = "--%";
+          document.getElementById("bestRecall").innerText = "--%";
+          document.getElementById("bestAUC").innerText = "--%";
           document.getElementById("totalRounds").innerText = "--";
           return;
         }
 
-        // Update stats
-        const bestAcc = Math.max(...data.map(r => r.accuracy));
-        const bestF1 = Math.max(...data.map(r => r.f1));
-
-        document.getElementById("bestAccuracy").innerText = (bestAcc * 100).toFixed(1) + "%";
-        document.getElementById("bestF1").innerText = (bestF1 * 100).toFixed(1) + "%";
+        // Update stat cards
+        const best = (arr) => Math.max(...arr.filter(v => v != null && !isNaN(v)));
+        document.getElementById("bestAccuracy").innerText = (best(data.map(r => r.accuracy)) * 100).toFixed(1) + "%";
+        document.getElementById("bestF1").innerText = (best(data.map(r => r.f1)) * 100).toFixed(1) + "%";
         document.getElementById("totalRounds").innerText = data.length;
 
-        // Create chart
-        const ctx = document.getElementById("metricsChart").getContext("2d");
+        const precVals = data.map(r => r.precision).filter(v => v != null);
+        document.getElementById("bestPrecision").innerText = precVals.length ? (best(precVals) * 100).toFixed(1) + "%" : "--%";
 
-        if (metricsChart) {
-          metricsChart.destroy();
-        }
+        const recVals = data.map(r => r.recall).filter(v => v != null);
+        document.getElementById("bestRecall").innerText = recVals.length ? (best(recVals) * 100).toFixed(1) + "%" : "--%";
+
+        const aucVals = data.map(r => r.auc).filter(v => v != null && !isNaN(v));
+        document.getElementById("bestAUC").innerText = aucVals.length ? (best(aucVals) * 100).toFixed(1) + "%" : "--%";
+
+        const labels = data.map(r => `Round ${r.round}`);
+
+        // ===== Classification Metrics Chart =====
+        const ctx = document.getElementById("metricsChart").getContext("2d");
+        if (metricsChart) metricsChart.destroy();
+
+        const datasets = [
+          {
+            label: 'Accuracy',
+            data: data.map(r => (r.accuracy * 100).toFixed(2)),
+            borderColor: '#1193d4',
+            backgroundColor: 'rgba(17, 147, 212, 0.08)',
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#1193d4',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            borderWidth: 2.5
+          },
+          {
+            label: 'F1 Score',
+            data: data.map(r => (r.f1 * 100).toFixed(2)),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#10b981',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            borderWidth: 2.5
+          },
+          {
+            label: 'Precision',
+            data: data.map(r => r.precision != null ? (r.precision * 100).toFixed(2) : null),
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.08)',
+            fill: false,
+            tension: 0.4,
+            pointBackgroundColor: '#8b5cf6',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            borderWidth: 2.5,
+            borderDash: [6, 3]
+          },
+          {
+            label: 'Recall',
+            data: data.map(r => r.recall != null ? (r.recall * 100).toFixed(2) : null),
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.08)',
+            fill: false,
+            tension: 0.4,
+            pointBackgroundColor: '#ef4444',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            borderWidth: 2.5,
+            borderDash: [6, 3]
+          },
+          {
+            label: 'AUC-ROC',
+            data: data.map(r => r.auc != null && !isNaN(r.auc) ? (r.auc * 100).toFixed(2) : null),
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.08)',
+            fill: false,
+            tension: 0.4,
+            pointBackgroundColor: '#f59e0b',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            borderWidth: 2
+          }
+        ];
 
         metricsChart = new Chart(ctx, {
           type: 'line',
-          data: {
-            labels: data.map(r => `Round ${r.round}`),
-            datasets: [
-              {
-                label: 'Accuracy',
-                data: data.map(r => (r.accuracy * 100).toFixed(2)),
-                borderColor: '#1193d4',
-                backgroundColor: 'rgba(17, 147, 212, 0.1)',
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#1193d4',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 4
-              },
-              {
-                label: 'F1 Score',
-                data: data.map(r => (r.f1 * 100).toFixed(2)),
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#10b981',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 4
-              }
-            ]
-          },
+          data: { labels, datasets },
           options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'top',
-                labels: {
-                  usePointStyle: true,
-                  padding: 20
+                labels: { usePointStyle: true, padding: 16, font: { size: 12 } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}%`
                 }
               }
             },
             scales: {
               y: {
-                beginAtZero: false,
-                min: 0,
-                max: 100,
-                ticks: {
-                  callback: value => value + '%'
-                },
-                grid: {
-                  color: 'rgba(0,0,0,0.05)'
-                }
+                beginAtZero: false, min: 0, max: 100,
+                ticks: { callback: v => v + '%' },
+                grid: { color: 'rgba(0,0,0,0.05)' }
               },
-              x: {
-                grid: {
-                  display: false
-                }
-              }
+              x: { grid: { display: false } }
             },
-            interaction: {
-              intersect: false,
-              mode: 'index'
-            }
+            interaction: { intersect: false, mode: 'index' }
           }
+        });
+
+        // ===== Loss Chart =====
+        const lossCtx = document.getElementById("lossChart").getContext("2d");
+        if (lossChart) lossChart.destroy();
+
+        const lossData = data.map(r => (r.loss != null && !isNaN(r.loss)) ? parseFloat(r.loss.toFixed(4)) : null);
+        lossChart = new Chart(lossCtx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Evaluation Loss',
+              data: lossData,
+              borderColor: '#ec4899',
+              backgroundColor: 'rgba(236, 72, 153, 0.1)',
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: '#ec4899',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+              pointRadius: 3,
+              borderWidth: 2.5
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: true, position: 'top', labels: { usePointStyle: true } }
+            },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+              x: { grid: { display: false } }
+            },
+            interaction: { intersect: false, mode: 'index' }
+          }
+        });
+
+        // ===== Communication Cost Chart =====
+        const commCtx = document.getElementById("commChart").getContext("2d");
+        if (commChart) commChart.destroy();
+
+        const commData = data.map(r => r.comm_bytes != null ? parseFloat((r.comm_bytes / 1024).toFixed(1)) : null);
+        commChart = new Chart(commCtx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Comm Cost (KB)',
+              data: commData,
+              backgroundColor: 'rgba(20, 184, 166, 0.6)',
+              borderColor: '#14b8a6',
+              borderWidth: 1,
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: true, position: 'top', labels: { usePointStyle: true } }
+            },
+            scales: {
+              y: { beginAtZero: true, ticks: { callback: v => v + ' KB' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+              x: { grid: { display: false } }
+            },
+            interaction: { intersect: false, mode: 'index' }
+          }
+        });
+
+        // ===== Metrics Table =====
+        const tbody = document.getElementById("metricsTableBody");
+        tbody.innerHTML = '';
+        data.forEach(r => {
+          const accColor = r.accuracy >= 0.9 ? 'text-green-600 font-semibold' : r.accuracy >= 0.8 ? 'text-primary font-medium' : '';
+          tbody.innerHTML += `
+            <tr class="hover:bg-background-light dark:hover:bg-[#1a2c35] transition-colors">
+              <td class="py-2 px-2 font-medium">${r.round}</td>
+              <td class="py-2 px-2 text-right ${accColor}">${fmt(r.accuracy)}</td>
+              <td class="py-2 px-2 text-right">${fmt(r.f1)}</td>
+              <td class="py-2 px-2 text-right">${fmt(r.precision)}</td>
+              <td class="py-2 px-2 text-right">${fmt(r.recall)}</td>
+              <td class="py-2 px-2 text-right">${fmt(r.specificity)}</td>
+              <td class="py-2 px-2 text-right">${fmt(r.auc)}</td>
+              <td class="py-2 px-2 text-right">${fmt(r.loss, false)}</td>
+              <td class="py-2 px-2 text-right">${r.comm_bytes != null ? (r.comm_bytes / 1024).toFixed(1) : 'N/A'}</td>
+            </tr>`;
         });
 
       } catch (err) {

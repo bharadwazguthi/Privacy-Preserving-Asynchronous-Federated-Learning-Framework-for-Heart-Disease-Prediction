@@ -8,7 +8,7 @@ import secrets
 import os
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "aflcp.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "aflcp.db")
 
 
 def get_db():

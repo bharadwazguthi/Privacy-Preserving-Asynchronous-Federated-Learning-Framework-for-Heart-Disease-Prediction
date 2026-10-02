@@ -2,6 +2,8 @@
 <html class="light" lang="en">
 
 <head>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>AFLCP – Train Model</title>
@@ -115,7 +117,7 @@
         </div>
         <div class="flex flex-col">
           <h1 class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-none">AFLCP</h1>
-          <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal mt-1">CVD Prediction AI
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal mt-1">Heart Disease Prediction AI
           </p>
         </div>
       </div>
@@ -405,13 +407,18 @@
                 <tr>
                   <th class="text-left py-3 font-medium">Round</th>
                   <th class="text-right py-3 font-medium">Accuracy</th>
-                  <th class="text-right py-3 font-medium">F1 Score</th>
+                  <th class="text-right py-3 font-medium">F1</th>
+                  <th class="text-right py-3 font-medium">Prec</th>
+                  <th class="text-right py-3 font-medium">Recall</th>
+                  <th class="text-right py-3 font-medium">Spec</th>
                   <th class="text-right py-3 font-medium">AUC</th>
+                  <th class="text-right py-3 font-medium">Loss</th>
+                  <th class="text-right py-3 font-medium">Comm</th>
                 </tr>
               </thead>
               <tbody id="metricsTable" class="divide-y divide-[#dbe2e6]">
                 <tr>
-                  <td colspan="4" class="text-center text-text-secondary-light py-8">No metrics yet.</td>
+                  <td colspan="9" class="text-center text-text-secondary-light py-8">No metrics yet.</td>
                 </tr>
               </tbody>
             </table>
@@ -504,7 +511,7 @@
       saveModelBtn.classList.add("hidden");
       trainStatus.innerHTML = '<span class="text-primary font-medium">🚀 Training started with ' + config.rounds + ' rounds...</span>';
       logsBox.innerText = "Initializing training...";
-      metricsTable.innerHTML = '<tr><td colspan="4" class="text-center text-text-secondary-light py-4">Training in progress...</td></tr>';
+      metricsTable.innerHTML = '<tr><td colspan="9" class="text-center text-text-secondary-light py-4">Training in progress...</td></tr>';
       progressContainer.classList.remove("hidden");
       progressBar.style.width = "0%";
       progressText.innerText = "0%";
@@ -553,13 +560,23 @@
         const totalRounds = parseInt(document.getElementById('cfgRounds').value);
         rows.forEach(r => {
           const auc = r.auc && !isNaN(r.auc) ? (r.auc * 100).toFixed(2) + "%" : "N/A";
+          const prec = r.precision != null ? (r.precision * 100).toFixed(2) + "%" : "N/A";
+          const rec = r.recall != null ? (r.recall * 100).toFixed(2) + "%" : "N/A";
+          const spec = r.specificity && !isNaN(r.specificity) ? (r.specificity * 100).toFixed(2) + "%" : "N/A";
+          const loss = r.loss && !isNaN(r.loss) ? r.loss.toFixed(4) : "N/A";
+          const comm = r.comm_bytes != null ? (r.comm_bytes / 1024).toFixed(1) + "KB" : "N/A";
           const accColor = r.accuracy >= 0.9 ? 'text-green-600 font-semibold' : r.accuracy >= 0.8 ? 'text-primary font-medium' : '';
           metricsTable.innerHTML += `
             <tr class="hover:bg-background-light transition-colors">
               <td class="py-2 font-medium">${r.round}</td>
               <td class="py-2 text-right ${accColor}">${(r.accuracy * 100).toFixed(2)}%</td>
               <td class="py-2 text-right">${(r.f1 * 100).toFixed(2)}%</td>
+              <td class="py-2 text-right">${prec}</td>
+              <td class="py-2 text-right">${rec}</td>
+              <td class="py-2 text-right">${spec}</td>
               <td class="py-2 text-right">${auc}</td>
+              <td class="py-2 text-right">${loss}</td>
+              <td class="py-2 text-right">${comm}</td>
             </tr>`;
         });
         const progress = Math.min((rows.length / totalRounds) * 100, 100);

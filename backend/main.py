@@ -30,7 +30,7 @@ from fastapi import FastAPI, Request, UploadFile, File, HTTPException, Cookie, F
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 
-from aflcp_core import train_aflcp, predict_aflcp, load_metrics, AFLCPPredictor
+from backend.aflcp_core import train_aflcp, predict_aflcp, load_metrics, AFLCPPredictor
 from backend.database import (
     init_db, verify_user, create_user, create_session,
     get_user_from_session, delete_session, save_training_record
@@ -54,17 +54,27 @@ os.makedirs(SAVED_MODELS_DIR, exist_ok=True)
 # -------------------------------------------------
 # APP INIT
 # -------------------------------------------------
+from fastapi.staticfiles import StaticFiles
 app = FastAPI(title="AFLCP Backend")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+STATIC_DIR = os.path.join(BASE_DIR, "ui", "static")
+os.makedirs(STATIC_DIR, exist_ok=True)
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 training_process = None
 training_status = {"running": False, "completed": False, "error": None}
 training_config = {"rounds": 50}  # Track current training config
 last_batch_predictions = []  # Store last batch prediction results
 
-# Clear stale training log on startup
-if os.path.exists(LOG_FILE):
-    os.remove(LOG_FILE)
+
+@app.on_event("startup")
+def startup_event():
+    """Initialize database tables and default users on server start"""
+    init_db()
+    # Clear stale training log
+    if os.path.exists(LOG_FILE):
+        os.remove(LOG_FILE)
 
 
 # -------------------------------------------------
@@ -310,9 +320,9 @@ async def start_training(request: Request):
     if os.path.exists(LOG_FILE):
         os.remove(LOG_FILE)
 
-    # Run training as subprocess
+    # Run training as subprocess (using aflcp_core.py's __main__ block)
     import subprocess
-    train_script = os.path.join(BASE_DIR, "train_subprocess.py")
+    train_script = os.path.join(BASE_DIR, "backend", "aflcp_core.py")
     training_process = subprocess.Popen(
         [sys.executable, train_script, json.dumps(config)],
         cwd=BASE_DIR,
@@ -631,9 +641,15 @@ async def save_model(request: Request):
                 "total_rounds": len(mdf),
                 "final_accuracy": float(mdf.iloc[-1]["accuracy"]),
                 "final_f1": float(mdf.iloc[-1]["f1"]),
-                "final_auc": float(mdf.iloc[-1]["auc"]) if not pd.isna(mdf.iloc[-1]["auc"]) else None,
+                "final_auc": float(mdf.iloc[-1]["auc"]) if "auc" in mdf.columns and not pd.isna(mdf.iloc[-1]["auc"]) else None,
+                "final_precision": float(mdf.iloc[-1]["precision"]) if "precision" in mdf.columns else None,
+                "final_recall": float(mdf.iloc[-1]["recall"]) if "recall" in mdf.columns else None,
+                "final_specificity": float(mdf.iloc[-1]["specificity"]) if "specificity" in mdf.columns and not pd.isna(mdf.iloc[-1]["specificity"]) else None,
+                "final_loss": float(mdf.iloc[-1]["loss"]) if "loss" in mdf.columns and not pd.isna(mdf.iloc[-1]["loss"]) else None,
                 "best_accuracy": float(mdf["accuracy"].max()),
                 "best_f1": float(mdf["f1"].max()),
+                "best_precision": float(mdf["precision"].max()) if "precision" in mdf.columns else None,
+                "best_recall": float(mdf["recall"].max()) if "recall" in mdf.columns else None,
             }
 
     # Save metadata
@@ -760,35 +776,73 @@ def generate_metrics_plot(save_dir):
     if len(df) == 0:
         return
 
-    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    fig, axes = plt.subplots(2, 3, figsize=(20, 10))
+    fig.suptitle('AFLCP Training Metrics', fontsize=16, fontweight='bold', y=0.98)
 
+    # --- Row 1 ---
     # Accuracy
-    axes[0].plot(df["round"], df["accuracy"], marker="o", color="#1193d4", linewidth=2)
-    axes[0].fill_between(df["round"], df["accuracy"], alpha=0.1, color="#1193d4")
-    axes[0].set_xlabel("Round")
-    axes[0].set_ylabel("Accuracy")
-    axes[0].set_title("Model Accuracy Over Rounds")
-    axes[0].grid(True, alpha=0.3)
+    axes[0, 0].plot(df["round"], df["accuracy"], marker="o", color="#1193d4", linewidth=2, markersize=4)
+    axes[0, 0].fill_between(df["round"], df["accuracy"], alpha=0.1, color="#1193d4")
+    axes[0, 0].set_xlabel("Round")
+    axes[0, 0].set_ylabel("Accuracy")
+    axes[0, 0].set_title("Accuracy")
+    axes[0, 0].grid(True, alpha=0.3)
 
     # F1 Score
-    axes[1].plot(df["round"], df["f1"], marker="s", color="#10b981", linewidth=2)
-    axes[1].fill_between(df["round"], df["f1"], alpha=0.1, color="#10b981")
-    axes[1].set_xlabel("Round")
-    axes[1].set_ylabel("F1 Score")
-    axes[1].set_title("F1 Score Over Rounds")
-    axes[1].grid(True, alpha=0.3)
+    axes[0, 1].plot(df["round"], df["f1"], marker="s", color="#10b981", linewidth=2, markersize=4)
+    axes[0, 1].fill_between(df["round"], df["f1"], alpha=0.1, color="#10b981")
+    axes[0, 1].set_xlabel("Round")
+    axes[0, 1].set_ylabel("F1 Score")
+    axes[0, 1].set_title("F1 Score")
+    axes[0, 1].grid(True, alpha=0.3)
+
+    # Precision
+    if "precision" in df.columns:
+        axes[0, 2].plot(df["round"], df["precision"], marker="D", color="#8b5cf6", linewidth=2, markersize=4)
+        axes[0, 2].fill_between(df["round"], df["precision"], alpha=0.1, color="#8b5cf6")
+    axes[0, 2].set_xlabel("Round")
+    axes[0, 2].set_ylabel("Precision")
+    axes[0, 2].set_title("Precision")
+    axes[0, 2].grid(True, alpha=0.3)
+
+    # --- Row 2 ---
+    # Recall + Specificity (overlaid)
+    if "recall" in df.columns:
+        axes[1, 0].plot(df["round"], df["recall"], marker="^", color="#ef4444", linewidth=2, markersize=4, label="Recall (Sensitivity)")
+        axes[1, 0].fill_between(df["round"], df["recall"], alpha=0.08, color="#ef4444")
+    if "specificity" in df.columns:
+        spec_clean = df["specificity"].dropna()
+        if len(spec_clean) > 0:
+            axes[1, 0].plot(df["round"][:len(spec_clean)], spec_clean, marker="v", color="#06b6d4", linewidth=2, markersize=4, label="Specificity")
+            axes[1, 0].fill_between(df["round"][:len(spec_clean)], spec_clean, alpha=0.08, color="#06b6d4")
+    axes[1, 0].set_xlabel("Round")
+    axes[1, 0].set_ylabel("Score")
+    axes[1, 0].set_title("Recall & Specificity")
+    axes[1, 0].legend(fontsize=8)
+    axes[1, 0].grid(True, alpha=0.3)
 
     # AUC
     if "auc" in df.columns:
         auc_clean = df["auc"].dropna()
         if len(auc_clean) > 0:
-            axes[2].plot(df["round"][:len(auc_clean)], auc_clean, marker="^", color="#f59e0b", linewidth=2)
-            axes[2].fill_between(df["round"][:len(auc_clean)], auc_clean, alpha=0.1, color="#f59e0b")
-    axes[2].set_xlabel("Round")
-    axes[2].set_ylabel("AUC")
-    axes[2].set_title("AUC-ROC Over Rounds")
-    axes[2].grid(True, alpha=0.3)
+            axes[1, 1].plot(df["round"][:len(auc_clean)], auc_clean, marker="^", color="#f59e0b", linewidth=2, markersize=4)
+            axes[1, 1].fill_between(df["round"][:len(auc_clean)], auc_clean, alpha=0.1, color="#f59e0b")
+    axes[1, 1].set_xlabel("Round")
+    axes[1, 1].set_ylabel("AUC")
+    axes[1, 1].set_title("AUC-ROC")
+    axes[1, 1].grid(True, alpha=0.3)
 
-    plt.tight_layout()
+    # Loss
+    if "loss" in df.columns:
+        loss_clean = df["loss"].dropna()
+        if len(loss_clean) > 0:
+            axes[1, 2].plot(df["round"][:len(loss_clean)], loss_clean, marker="x", color="#ec4899", linewidth=2, markersize=4)
+            axes[1, 2].fill_between(df["round"][:len(loss_clean)], loss_clean, alpha=0.1, color="#ec4899")
+    axes[1, 2].set_xlabel("Round")
+    axes[1, 2].set_ylabel("Loss")
+    axes[1, 2].set_title("Evaluation Loss")
+    axes[1, 2].grid(True, alpha=0.3)
+
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.savefig(plot_path, dpi=120, bbox_inches='tight')
     plt.close()
